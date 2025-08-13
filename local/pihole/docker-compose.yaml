@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pi-hole
+    mem_limit: 2g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:false
+    restart: on-failure:5
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - CAP_SYS_TIME
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+      - ${DOCKER_DIR_PREFIX}/pihole/pihole:/etc/pihole:rw
+      - ${DOCKER_DIR_PREFIX}/pihole/lighttpd:/etc/lighttpd
+    environment:
+      WEBPASSWORD: ${PH_WEB_PASSWORD}
+      WEB_BIND_ADDR: ${PH_WEB_ADDRESS}
+      ServerIP: ${PH_WEB_ADDRESS}
+      TZ: ${TZ}
+      DNSMASQ_USER: ${PH_DNSMASQ_USER}
+      DNSMASQ_LISTENING: ${PH_DNSMASQ_LISTENING}
