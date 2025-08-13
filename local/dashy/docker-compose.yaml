@@ -1,0 +1,21 @@
+version: '3.9'
+services:
+ dashy:
+    image: lissy93/dashy:latest
+    container_name: Dashy
+    restart: on-failure:5
+    healthcheck:
+      test: ['CMD', 'node', '/app/services/healthcheck']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      UID: 1026
+      GID: 100
+      NODE_ENV: production
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/dashy/dashyconf.yml:/app/user-data/conf.yml
+      - ${DOCKER_DIR_PREFIX}/dashy/icons:/app/user-data/item-icons:rw
+    ports:
+      - 7444:8080

@@ -1,0 +1,101 @@
+version: "3.9"
+services:
+  db:
+    image: mariadb:11.3-jammy
+    container_name: chevereto-db
+    hostname: chevereto-db
+    mem_limit: 1g
+    cpu_shares: 768
+    networks:
+      - backend
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/chevereto/db:/var/lib/mysql:rw
+      - ${DOCKER_DIR_PREFIX}/chevereto/db:/etc/mysql/conf.d:rw
+    environment:
+      TZ: America/New_York
+      MARIADB_RANDOM_ROOT_PASSWORD: true
+      MARIADB_DATABASE: chevereto
+      MARIADB_USER: cheveretouser
+      MARIADB_PASSWORD: cheveretopass
+      MARIADB_MYSQL_LOCALHOST_GRANTS: SUPER
+    restart: on-failure:5
+
+  chevereto:
+    image: ghcr.io/chevereto/chevereto:4.3.6
+    container_name: chevereto
+    hostname: chevereto
+    mem_limit: 4g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: curl -f http://photos.dem2s.com:80/ || exit 1
+    networks:
+      - backend
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/chevereto/storage:/var/www/html/images/:rw
+
+    environment:
+
+      TZ: America/New_York
+      CHEVERETO_DB_HOST: chevereto-db
+      CHEVERETO_DB_USER: ${CHEVERETO_DB_USER}
+      CHEVERETO_DB_PASS: ${CHEVERETO_DB_PASS}
+      CHEVERETO_DB_PORT: 3306
+      CHEVERETO_DB_NAME: ${CHEVERETO_DB_NAME}
+      CHEVERETO_HOSTNAME: photos.dem2s.com
+      CHEVERETO_SERVICING: server
+      CHEVERETO_HOSTNAME_PATH: /
+      CHEVERETO_HTTPS: 1
+      CHEVERETO_ASSET_STORAGE_TYPE: local
+      CHEVERETO_ASSET_STORAGE_URL: http://photos.dem2s.com/images/_assets/
+      CHEVERETO_ASSET_STORAGE_BUCKET: /var/www/html/images/_assets/
+      CHEVERETO_MAX_EXECUTION_TIME_SECONDS: 60
+      CHEVERETO_MAX_UPLOAD_SIZE: 40960M
+      CHEVERETO_MAX_POST_SIZE: 40960M
+      CHEVERETO_HEADER_CLIENT_IP: X-Real-IP
+      CHEVERETO_LICENSE_KEY: ${CHEVERETO_LICENSE_KEY}
+    restart: on-failure:5
+    depends_on:
+      db:
+        condition: service_started
+    labels:
+      - "traefik.enable=true" # This enables Traefik
+      - "traefik.http.routers.chevereto.rule=Host(`photos.dem2s.com`)"
+      - "traefik.http.routers.chevereto.entrypoints=web" # Determine what entrypoint to use, and this what port
+      - "traefik.http.routers.chevereto.service=chevereto-svc" # Determine what service to use
+      - "traefik.http.services.chevereto-svc.loadbalancer.server.port=80" # Determine which port from the service to expose through Traefik
+      
+  reverse-proxy:
+    image: traefik:latest
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 4573:80
+    depends_on:
+      - 'chevereto'
+    command:
+      - --configFile=/etc/traefik/traefik.yaml
+    volumes:
+      - ${DOCKER_DIR_SOCK}:/var/run/docker.sock
+      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/traefik.yaml:/etc/traefik/traefik.yaml:rw
+      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/configs:/configs:ro
+      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/acme.json:/acme.json:rw
+      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/logs:/logs:rw
+    environment:
+      - TZ=America/New_York
+    read_only: true
+    security_opt:
+      - no-new-privileges=true
+    labels:
+      - crowdsec.enable=true
+      - crowdsec.labels.type=traefik
+    ## https://docs.crowdsec.net/docs/next/data_sources/docker#use_container_labels
+
+networks:
+  backend:
+    driver: bridge

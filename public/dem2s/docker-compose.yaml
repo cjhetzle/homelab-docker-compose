@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  wordpress:
+    image: wordpress:php8.2
+    container_name: wordpress-dem2s
+    restart: always
+    ports:
+      - 8182:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ${DEM2S_WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DEM2S_WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${DEM2S_WORDPRESS_DB_NAME}
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/dem2s/wordpress:/var/www/html
+
+  db:
+    image: mysql
+    container_name: wordpress-db-dem2s
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DEM2S_WORDPRESS_DB_NAME}
+      MYSQL_USER: ${DEM2S_WORDPRESS_DB_USER}
+      MYSQL_PASSWORD: ${DEM2S_WORDPRESS_DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/dem2s/wordpressdb:/var/lib/mysql
