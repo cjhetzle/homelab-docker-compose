@@ -1,0 +1,38 @@
+services:
+  projectsend:
+    container_name: projectsend
+    image: ghcr.io/linuxserver/projectsend
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    environment:
+      MAX_UPLOAD: 20000
+      MYSQL_DATABASE: ${PS_MYSQL_DB_NAME}
+      MYSQL_USER: ${PS_MYSQL_DB_USER}
+      MYSQL_PASSWORD: ${PS_MYSQL_DB_PASSWORD}
+      PUID: 1026
+      PGID: 100
+      TZ: ${TZ}
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/projectsend/config:/config:rw
+      - ${DOCKER_DIR_PREFIX}/projectsend/data:/data:rw
+    ports:
+      - 8516:80
+    depends_on:
+      db:
+        condition: service_started
+    restart: on-failure:5
+    
+  db:
+    container_name: projectsend-db
+    image: mariadb:11.4-noble #LTS Long Time Support Until May 29, 2029.
+    security_opt:
+      - no-new-privileges:false
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PS_MYSQL_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${PS_MYSQL_DB_NAME}
+      MYSQL_USER: ${PS_MYSQL_DB_USER}
+      MYSQL_PASSWORD: ${PS_MYSQL_DB_PASSWORD}
+      TZ: ${TZ}
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/projectsend/db:/var/lib/mysql:rw
+    restart: on-failure:5
