@@ -1,0 +1,120 @@
+---
+version: "3"
+services:
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - DELUGE_LOGLEVEL=debug #optional
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/deluge/config:/config
+      - ${DOCKER_DIR_PREFIX}/deluge/downloads:/downloads
+      - ${DIR_PREFIX}/TV and Movies/Movies:/movies
+      - ${DIR_PREFIX}/TV and Movies/TV Shows:/shows
+    #ports:
+    #  - 8112:8112
+    #  - 6881:6881
+    #  - 6881:6881/udp
+    #  - 58846:58846 #optional
+    network_mode: service:gluetun # run on the vpn network
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    restart: unless-stopped
+
+  #transmission:
+  #  image: lscr.io/linuxserver/transmission:latest
+  #  container_name: transmission
+  #  environment:
+  #    - PUID=1000
+  #    - PGID=1000
+  #    - TZ=Etc/UTC
+  #    - TRANSMISSION_WEB_HOME= #optional
+  #    - USER= #optional
+  #    - PASS= #optional
+  #    - WHITELIST= #optional
+  #    - PEERPORT= #optional
+  #    - HOST_WHITELIST= #optional
+  #  volumes:
+  #    - /volume1/docker/transmission/data:/config
+  #    - /volume1/docker/transmission/downloads:/downloads
+  #    - /volume1/docker/transmission/watch:/watch
+  #  network_mode: service:gluetun # run on the vpn network
+  #  depends_on:
+  #    gluetun:
+  #      condition: service_healthy
+  #  restart: unless-stopped
+    
+  #qbittorrent:
+  #  image: lscr.io/linuxserver/qbittorrent:latest
+  #  container_name: qbittorrent
+  #  environment:
+  #    - PUID=1000
+  #    - PGID=1000
+  #    - TZ=Etc/UTC
+  #    - WEBUI_PORT=8082
+  #    - TORRENTING_PORT=6881
+  #  command: /bin/sh -c "mkdir -p /var && /usr/bin/qbittorrent-nox"
+  #  volumes:
+  #    - /volume1/docker/qbittorrent/appdata:/config
+  #    #- /volume1/docker/qbittorrent/downloads:/downloads #optional
+  #    - /volume1/docker/downloads:/downloads:rw
+  #  network_mode: service:gluetun # run on the vpn network
+  #  depends_on:
+  #    gluetun:
+  #      condition: service_healthy
+  #  restart: unless-stopped
+    
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    # line above must be uncommented to allow external containers to connect.
+    # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks
+      - 8001:8000 # gluetun control server port
+      - 8112:8112
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+      - 8082:8082
+      - 6881:6881
+      - 6881:6881/udp
+    volumes:
+      - /volume1/docker/gluetun:/gluetun
+    environment:
+      # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
+      - VPN_SERVICE_PROVIDER=${DELUGE_VPN_PROVIDER}
+      - VPN_TYPE=${DELUGE_VPN_TYPE}
+      - SERVER_COUNTRIES=${DELUGE_VPN_SERVER_COUNTRIES}
+      # OpenVPN:
+      - OPENVPN_USER=${DELUGE_VPN_USER}
+      - OPENVPN_PASSWORD=${DELUGE_VPN_PASSWORD}
+      - VPN_PORT_FORWARDING=${DELUGE_VPN_PORT_FORWARDING}
+      - VPN_PORT_FORWARDING_UP_COMMAND=${DELUGE_VPN_PORT_FORWARDING_UP_COMMAND}
+      # - VPN_PORT_FORWARDING_LISTENING_PORT=6881
+      # Wireguard:
+      # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
+      # - WIREGUARD_ADDRESSES=10.64.222.21/32
+      # Timezone for accurate log times
+      - TZ=${TZ}
+      # Server list updater
+      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
+      - UPDATER_PERIOD=24h
+volumes:
+    seanime_volume:
+        external: true
+        name: seanime_volume

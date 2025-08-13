@@ -1,0 +1,10 @@
+services:
+  home-assistant:
+    container_name: home-assistant
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/homeassistant:/config
+    network_mode: host
+    restart: always
+    image: homeassistant/home-assistant

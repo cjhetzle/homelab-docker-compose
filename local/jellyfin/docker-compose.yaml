@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      TZ: ${TZ}
+      user: 1026:100
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8096' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/jellyfin/config:/config:rw
+      - ${DOCKER_DIR_PREFIX}/jellyfin/cache:/cache:rw
+      - ${DOCKER_DIR_PREFIX}/jellyfin/logs:/logs:rw
+      - ${DIR_PREFIX}/TV and Movies:/media:rw
+      - ${DIR_PREFIX}/Music:/music:rw
+    restart: on-failure:5
+    network_mode: host

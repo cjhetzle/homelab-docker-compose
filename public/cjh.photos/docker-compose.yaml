@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  wordpress:
+    image: wordpress:php8.2
+    container_name: wordpress-cameronhetzler
+    restart: always
+    ports:
+      - 8181:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ${CJH_WP_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${CJH_WP_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${CJH_WP_DB_NAME}
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/cameronhetzler/wordpress:/var/www/html
+
+  db:
+    image: mysql
+    container_name: wordpress-db-cameronhetzler
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${CJH_WP_DB_NAME}
+      MYSQL_USER: ${CJH_WP_DB_USER}
+      MYSQL_PASSWORD: ${CJH_WP_DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/cameronhetzler/wordpressdb:/var/lib/mysql

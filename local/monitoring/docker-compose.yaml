@@ -1,0 +1,159 @@
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    hostname: grafana
+    networks:
+      - grafana-net
+    mem_limit: 512m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3000/api/health
+    ports:
+      - 3340:3000
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/grafana/data:/var/lib/grafana:rw
+    environment:
+      TZ: ${TZ}
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,natel-discrete-panel,grafana-piechart-panel
+    restart: on-failure:5
+
+  prometheus:
+    image: prom/prometheus
+    command:
+      - '--storage.tsdb.retention.time=60d'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    container_name: prometheus
+    hostname: prometheus-server
+    ports:
+      - 9090:9090
+    networks:
+      - grafana-net
+      - prometheus-net
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges=true
+    user: 1026:100
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:9090/ || exit 1
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/grafana/prometheus:/prometheus:rw
+      - ${DOCKER_DIR_PREFIX}/grafana/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    restart: on-failure:5
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    command:
+      - --collector.disable-defaults
+      - --collector.stat
+      - --collector.time
+      - --collector.cpu
+      - --collector.loadavg
+      - --collector.hwmon
+      - --collector.meminfo
+      - --collector.diskstats
+    container_name: prometheus-node
+    hostname: prometheus-node
+    networks:
+      - prometheus-net
+    mem_limit: 256m
+    mem_reservation: 64m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges=true
+    read_only: true
+    user: 1026:100
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:9100/
+    restart: on-failure:5
+
+  snmp-exporter:
+    image: prom/snmp-exporter:latest
+    command:
+      - '--config.file=/etc/snmp_exporter/snmp.yml'
+    container_name: prometheus-snmp
+    hostname: prometheus-snmp
+    networks:
+      - prometheus-net
+    mem_limit: 256m
+    mem_reservation: 64m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: 1026:100
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:9116/ || exit 1
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/grafana/snmp:/etc/snmp_exporter/:ro
+    restart: on-failure:5
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    command:
+      - '--docker_only=true'
+    container_name: prometheus-cadvisor
+    hostname: prometheus-cadvisor
+    networks:
+      - prometheus-net
+    mem_limit: 256m
+    mem_reservation: 64m
+    cpu_shares: 512
+    security_opt:
+      - no-new-privileges=true
+    #read_only: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - ${DOCKER_DIR_SOCK}:/var/run/docker.sock:ro
+    restart: on-failure:5
+
+  speedtest-tracker:
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    container_name: speedtest-tracker
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - APP_KEY=${STT_APP_KEY}
+      - APP_URL=http://yakpak.lan:6875
+      - DB_CONNECTION=sqlite
+      - SPEEDTEST_SCHEDULE=*/20 * * * *
+      - SPEEDTEST_SERVERS=31904,31900,29113
+      - DB_HOST= #optional
+      - DB_PORT= #optional
+      - DB_DATABASE= #optional
+      - DB_USERNAME= #optional
+      - DB_PASSWORD= #optional
+      - DISPLAY_TIMEZONE=Etc/UTC #optional
+      - PRUNE_RESULTS_OLDER_THAN=0 #optional
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=${MAIL_SERVER_HOST}
+      - MAIL_PORT=587
+      - MAIL_USERNAME=${MAIL_SERVER_USERNAME}
+      - MAIL_PASSWORD=${MAIL_SERVER_PASSWORD}
+      - MAIL_ENCRYPTION=tls
+      - MAIL_FROM_ADDRESS=${MAIL_SERVER_FROM}
+      - MAIL_FROM_NAME="Speedtest Tracker"
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/speedtest/data:/config
+    ports:
+      - 81:80
+    restart: unless-stopped
+
+networks:
+  grafana-net:
+    name: grafana-net
+    ipam:
+      config:
+        - subnet: 192.168.50.0/24
+  prometheus-net:
+    name: prometheus-net
+    ipam:
+      config:
+        - subnet: 192.168.51.0/24

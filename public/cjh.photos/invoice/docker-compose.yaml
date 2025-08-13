@@ -1,0 +1,116 @@
+services:
+  redis:
+    image: redis
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass ${IN_REDIS_PASSWORD}
+    container_name: invoiceninja-redis
+    hostname: invoiceninja-redis
+    mem_limit: 256m
+    mem_reservation: 50m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: 1026:100
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/invoiceninja/redis:/data:rw
+    environment:
+      TZ: ${TZ}
+    restart: on-failure:5
+
+  db:
+    image: mariadb:11.4-noble #LTS Long Time Support Until May 29, 2029.
+    container_name: invoiceninja-db
+    hostname: invoiceninja-db
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:false
+      - seccomp:unconfined
+      - apparmor:unconfined
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/invoiceninja/db:/var/lib/mysql:rw
+    environment:
+      TZ: ${TZ}
+      MYSQL_ROOT_PASSWORD: ${IN_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${IN_MYSQL_DATABASE}
+      MYSQL_USER: ${IN_MYSQL_USER}
+      MYSQL_PASSWORD: ${IN_MYSQL_PASSWORD}
+    restart: on-failure:5
+
+  invoiceninja:
+    image: invoiceninja/invoiceninja:latest
+    container_name: invoiceninja
+    hostname: invoiceninja
+    mem_limit: 4g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: stat /etc/passwd || exit 1
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/invoiceninja/public:/var/www/app/public:rw
+      - ${DOCKER_DIR_PREFIX}/invoiceninja/storage:/var/www/app/storage:rw
+    environment:
+      APP_NAME: Invoice Ninja
+      APP_ENV: production
+      APP_KEY: ${IN_APP_KEY}
+      APP_DEBUG: false
+      APP_URL: https://invoice.cjh.photos
+      IN_USER_EMAIL: ${IN_EMAIL_USERNAME}
+      IN_PASSWORD: ${IN_PASSWORD}
+      REQUIRE_HTTPS: true
+      TRUSTED_PROXIES: "*"
+      IS_DOCKER: true
+      QUEUE_CONNECTION: database
+      DB_HOST: invoiceninja-db
+      DB_DATABASE: ${IN_DB_DATABASE}
+      DB_USERNAME: ${IN_DB_USERNAME}
+      DB_PASSWORD: ${IN_DB_PASSWORD}
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      REDIS_HOST: invoiceninja-redis
+      REDIS_PASSWORD: ${IN_REDIS_PASSWORD}
+#      PHANTOMJS_KEY='a-demo-key-with-low-quota-per-ip-address'
+#      PHANTOMJS_SECRET=password
+      PHANTOMJS_PDF_GENERATION: false
+      PDF_GENERATOR: snappdf
+      MAIL_MAILER: smtp
+      MAIL_HOST: ${IN_EMAIL_HOST}
+      MAIL_PORT: 587
+      MAIL_USERNAME: ${IN_EMAIL_USERNAME}
+      MAIL_PASSWORD: ${IN_EMAIL_PASSWORD}
+      MAIL_ENCRYPTION: STARTTLS
+      MAIL_FROM_ADDRESS: ${IN_EMAIL_USERNAME}
+      MAIL_FROM_NAME: Invoice
+      #ERROR_EMAIL: error@mail.com # Error emails are sent to this email
+    restart: on-failure:5
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_started
+
+  nginx:
+    image: nginx:latest
+    container_name: invoiceninja-nginx
+    hostname: invoiceninja-nginx
+    mem_limit: 512m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: curl -f http://localhost:80/ || exit 1
+    ports:
+      - 5485:80
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/invoiceninja/in-vhost.conf:/etc/nginx/conf.d/in-vhost.conf:ro
+      - ${DOCKER_DIR_PREFIX}/invoiceninja/public:/var/www/app/public:ro
+    restart: on-failure:5
+    depends_on:
+      invoiceninja:
+        condition: service_started
