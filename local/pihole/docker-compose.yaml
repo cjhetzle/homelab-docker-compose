@@ -2,7 +2,7 @@ version: "3.9"
 services:
   pihole:
     image: pihole/pihole:latest
-    container_name: pi-hole
+    container_name: pihole
     mem_limit: 2g
     cpu_shares: 768
     security_opt:
