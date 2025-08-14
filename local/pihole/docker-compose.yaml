@@ -11,8 +11,8 @@ services:
     ports:
       - 53:53/tcp
       - 53:53/udp
-      - 853:853
-    networks:
+      - 8081:8081
+3    networks:
       - traefik
     cap_add:
       - NET_ADMIN
