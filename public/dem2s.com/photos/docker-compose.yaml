@@ -56,7 +56,7 @@ services:
       # Apply autentificiation with http challenge
       - traefik.http.routers.photos-dem2s-secured.tls=true
       - traefik.http.routers.photos-dem2s-secured.tls.certresolver=lets-encr
-      
+
   db:
     image: mariadb:11.3-jammy
     container_name: chevereto-db
