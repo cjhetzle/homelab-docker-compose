@@ -24,6 +24,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin.entrypoints=websecure
-      - traefik.http.services.jellyfin.loadbalancer.server.port=8080
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
       - traefik.http.routers.jellyfin.service=jellyfin
       - traefik.http.routers.jellyfin.tls.certresolver=myresolver
