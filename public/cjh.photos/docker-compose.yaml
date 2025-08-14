@@ -13,6 +13,12 @@ services:
       WORDPRESS_DB_NAME: ${CJH_WP_DB_NAME}
     volumes:
       - ${DOCKER_DIR_PREFIX}/cameronhetzler/wordpress:/var/www/html
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.wordpress.rule=Host(`cjh.photos`)
+      - traefik.http.routers.wordpress.entrypoints=web
+      - traefik.http.services.wordpress.loadbalancer.server.port=80
+      - traefik.http.routers.wordpress.service=wordpress
 
   db:
     image: mysql
