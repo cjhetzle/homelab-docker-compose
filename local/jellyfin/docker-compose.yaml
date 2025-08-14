@@ -21,7 +21,7 @@ services:
     restart: on-failure:5
     network_mode: host
     ports:
-      8096:8096
+      - 8096:8096
     labels:
       - traefik.enable=true
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.lan`)
