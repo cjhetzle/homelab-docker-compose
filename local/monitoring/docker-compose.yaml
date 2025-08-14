@@ -149,7 +149,7 @@ services:
     volumes:
       - ${DOCKER_DIR_PREFIX}/speedtest/data:/config
     ports:
-      - 81:80
+      - 8081:80
     restart: unless-stopped
 
 networks:
