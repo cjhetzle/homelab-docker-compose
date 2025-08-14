@@ -43,3 +43,7 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
       - ${DOCKER_DIR_PREFIX}/cameronhetzler/wordpressdb:/var/lib/mysql
+
+networks:
+  traefik:
+    external: true
