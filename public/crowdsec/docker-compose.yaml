@@ -10,7 +10,7 @@ services:
       DOCKER_HOST: tcp://socket-proxy:2375
       COLLECTIONS: crowdsecurity/traefik
     ports:
-      - 8081:8080
+      - 8083:8080
     depends_on:
       - 'socket-proxy'
     volumes:
