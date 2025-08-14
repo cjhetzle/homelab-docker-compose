@@ -19,7 +19,8 @@ services:
       - ${DIR_PREFIX}/TV and Movies:/media:rw
       - ${DIR_PREFIX}/Music:/music:rw
     restart: on-failure:5
-    network_mode: host
+    networks:
+      - traefik
     ports:
       - 8096:8096
     labels:
@@ -28,3 +29,7 @@ services:
       - traefik.http.routers.jellyfin.entrypoints=web
       - traefik.http.services.jellyfin.loadbalancer.server.port=8096
       - traefik.http.routers.jellyfin.service=jellyfin
+
+networks:
+  traefik:
+    external: true
