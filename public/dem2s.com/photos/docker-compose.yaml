@@ -35,11 +35,10 @@ services:
       test: curl -f http://photos.dem2s.com:80/ || exit 1
     networks:
       - backend
+      - traefik
     volumes:
       - ${DOCKER_DIR_PREFIX}/chevereto/storage:/var/www/html/images/:rw
-
     environment:
-
       TZ: America/New_York
       CHEVERETO_DB_HOST: chevereto-db
       CHEVERETO_DB_USER: ${CHEVERETO_DB_USER}
@@ -63,39 +62,25 @@ services:
       db:
         condition: service_started
     labels:
-      - "traefik.enable=true" # This enables Traefik
-      - "traefik.http.routers.chevereto.rule=Host(`photos.dem2s.com`)"
-      - "traefik.http.routers.chevereto.entrypoints=web" # Determine what entrypoint to use, and this what port
-      - "traefik.http.routers.chevereto.service=chevereto-svc" # Determine what service to use
-      - "traefik.http.services.chevereto-svc.loadbalancer.server.port=80" # Determine which port from the service to expose through Traefik
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      # Get the routes from http
+      - traefik.http.routers.photos-dem2s.rule=Host(`photos.dem2s.com`)
+      - traefik.http.routers.photos-dem2s.entrypoints=web
+      - traefik.http.services.photos-dem2s.loadbalancer.server.port=80
+      - traefik.http.routers.photos-dem2s.service=chevereto
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.photos-dem2s.middlewares=redirect-to-https@docker
+      # Get the routes from https
+      - traefik.http.routers.photos-dem2s-secured.rule=Host(`photos.dem2s.com`)
+      - traefik.http.routers.photos-dem2s-secured.entrypoints=websecure
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.photos-dem2s-secured.tls=true
+      - traefik.http.routers.photos-dem2s-secured.tls.certresolver=lets-encr
       
-  reverse-proxy:
-    image: traefik:latest
-    restart: always
-    networks:
-      - backend
-    ports:
-      - 4573:80
-    depends_on:
-      - 'chevereto'
-    command:
-      - --configFile=/etc/traefik/traefik.yaml
-    volumes:
-      - ${DOCKER_DIR_SOCK}:/var/run/docker.sock
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/traefik.yaml:/etc/traefik/traefik.yaml:rw
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/configs:/configs:ro
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/acme.json:/acme.json:rw
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/logs:/logs:rw
-    environment:
-      - TZ=America/New_York
-    read_only: true
-    security_opt:
-      - no-new-privileges=true
-    labels:
-      - crowdsec.enable=true
-      - crowdsec.labels.type=traefik
-    ## https://docs.crowdsec.net/docs/next/data_sources/docker#use_container_labels
 
 networks:
+  traefik:
+    external: true
   backend:
-    driver: bridge
