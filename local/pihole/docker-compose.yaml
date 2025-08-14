@@ -36,7 +36,6 @@ services:
       - traefik.http.routers.pihole.entrypoints=web
       - traefik.http.services.pihole.loadbalancer.server.port=8081
       - traefik.http.routers.pihole.service=pihole
-      - traefik.http.routers.pihole.tls.certresolver=myresolver
       - traefik.http.routers.pihole.middlewares=pihole-admin
       - traefik.http.middlewares.pihole-admin.addprefix.prefix=/admin
 
