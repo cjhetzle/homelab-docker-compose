@@ -2,7 +2,7 @@ version: '3.9'
 services:
  dashy:
     image: lissy93/dashy:latest
-    container_name: Dashy
+    container_name: dashy
     restart: on-failure:5
     healthcheck:
       test: ['CMD', 'node', '/app/services/healthcheck']
@@ -17,5 +17,19 @@ services:
     volumes:
       - ${DOCKER_DIR_PREFIX}/dashy/dashyconf.yml:/app/user-data/conf.yml
       - ${DOCKER_DIR_PREFIX}/dashy/icons:/app/user-data/item-icons:rw
+    networks:
+      - traefik
     ports:
       - 7444:8080
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dashy.rule=Host(`home.lan`)
+      - traefik.http.routers.dashy.entrypoints=websecure
+      - traefik.http.services.dashy.loadbalancer.server.port=7444
+      - traefik.http.routers.dashy.service=dashy
+      - traefik.http.routers.dashy.tls.certresolver=myresolver
+
+networks:
+  traefik:
+    external: true
+
