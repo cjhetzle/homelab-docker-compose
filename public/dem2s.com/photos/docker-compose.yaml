@@ -74,11 +74,11 @@ services:
       - ${DOCKER_DIR_PREFIX}/chevereto/db:/var/lib/mysql:rw
       - ${DOCKER_DIR_PREFIX}/chevereto/db:/etc/mysql/conf.d:rw
     environment:
-      TZ: America/New_York
+      TZ: ${TZ}
       MARIADB_RANDOM_ROOT_PASSWORD: true
-      MARIADB_DATABASE: chevereto
-      MARIADB_USER: cheveretouser
-      MARIADB_PASSWORD: cheveretopass
+      MARIADB_DATABASE: ${CHEVERETO_DB_NAME}
+      MARIADB_USER: ${CHEVERETO_DB_USER}
+      MARIADB_PASSWORD: ${CHEVERETO_DB_PASS}
       MARIADB_MYSQL_LOCALHOST_GRANTS: SUPER
     restart: on-failure:5
 
