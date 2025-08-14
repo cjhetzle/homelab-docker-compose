@@ -1,0 +1,19 @@
+---
+version: "2"
+services:
+  traefik:
+    image: traefik
+    container_name: tr
+    volumes:
+      - /volume1/docker/traefik/config:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 880:80
+      - 4443:443
+      - 8080:8080
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.websecure.address=:4443
+    restart: unless-stopped
