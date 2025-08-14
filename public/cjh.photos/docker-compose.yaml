@@ -18,11 +18,11 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from http
-      - traefik.http.routers.wordpressmysite.rule=Host(`cjh.photos`)
-      - traefik.http.routers.wordpressmysite.entrypoints=web
+      - traefik.http.routers.wp-cjhphotos.rule=Host(`cjh.photos`)
+      - traefik.http.routers.wp-cjhphotos.entrypoints=web
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.wordpressmysite.middlewares=redirect-to-https@docker
+      - traefik.http.routers.wp-cjhphotos.middlewares=redirect-to-https@docker
       # Get the routes from https
       - traefik.http.routers.wp-cjhphotos-secured.rule=Host(`cjh.photos`)
       - traefik.http.routers.wp-cjhphotos-secured.entrypoints=websecure
