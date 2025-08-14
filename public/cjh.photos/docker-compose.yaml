@@ -14,11 +14,21 @@ services:
     volumes:
       - ${DOCKER_DIR_PREFIX}/cameronhetzler/wordpress:/var/www/html
     labels:
+      # The labels are usefull for Traefik only
       - traefik.enable=true
-      - traefik.http.routers.wordpress.rule=Host(`cjh.photos`)
-      - traefik.http.routers.wordpress.entrypoints=web
-      - traefik.http.services.wordpress.loadbalancer.server.port=80
-      - traefik.http.routers.wordpress.service=wordpress
+      - traefik.docker.network=traefik
+      # Get the routes from http
+      - traefik.http.routers.wordpressmysite.rule=Host(`cjh.photos`)
+      - traefik.http.routers.wordpressmysite.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.wordpressmysite.middlewares=redirect-to-https@docker
+      # Get the routes from https
+      - traefik.http.routers.wp-cjhphotos-secured.rule=Host(`cjh.photos`)
+      - traefik.http.routers.wp-cjhphotos-secured.entrypoints=websecure
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.wp-cjhphotos-secured.tls=true
+      - traefik.http.routers.wp-cjhphotos-secured.tls.certresolver=lets-encr
 
   db:
     image: mysql
