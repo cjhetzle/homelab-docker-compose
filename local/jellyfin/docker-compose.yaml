@@ -26,4 +26,3 @@ services:
       - traefik.http.routers.jellyfin.entrypoints=web
       - traefik.http.services.jellyfin.loadbalancer.server.port=8096
       - traefik.http.routers.jellyfin.service=jellyfin
-      - traefik.http.routers.jellyfin.tls.certresolver=myresolver
