@@ -20,6 +20,13 @@ services:
       TZ: ${TZ}
       GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,natel-discrete-panel,grafana-piechart-panel
     restart: on-failure:5
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`grafana.lan`)
+      - traefik.http.routers.grafana.entrypoints=websecure
+      - traefik.http.services.grafana.loadbalancer.server.port=8080
+      - traefik.http.routers.grafana.service=grafana
+      - traefik.http.routers.grafana.tls.certresolver=myresolver
 
   prometheus:
     image: prom/prometheus
