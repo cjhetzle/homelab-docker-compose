@@ -1,19 +1,26 @@
----
-version: "2"
 services:
   traefik:
-    image: traefik
-    container_name: tr
+    image: traefik:v3.5.0
+    container_name: traefik
     volumes:
       - /volume1/docker/traefik/config:/etc/traefik
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /volume1/docker/traefik/acme.json:/acme.json
+    networks:
+      - traefik
     ports:
-      - 880:80
-      - 4443:443
+      - 80:80
+      - 443:443
       - 8080:8080
-    command:
-      - --entrypoints.web.address=:80
-      - --entrypoints.web.http.redirections.entryPoint.to=websecure
-      - --entrypoints.web.http.redirections.entryPoint.scheme=https
-      - --entrypoints.websecure.address=:4443
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=Host(`traefik.lan`)
+      - traefik.http.routers.api.service=api@internal
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.routers.api.tls=true
+      - traefik.http.routers.api.tls.certresolver=myresolver
     restart: unless-stopped
+
+networks:
+  traefik:
+    external: true

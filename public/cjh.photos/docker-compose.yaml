@@ -19,9 +19,9 @@ services:
     container_name: wordpress-db-cameronhetzler
     restart: always
     environment:
-      MYSQL_DATABASE: ${CJH_WP_DB_NAME}
       MYSQL_USER: ${CJH_WP_DB_USER}
       MYSQL_PASSWORD: ${CJH_WP_DB_PASSWORD}
+      MYSQL_DATABASE: ${CJH_WP_DB_NAME}
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
       - ${DOCKER_DIR_PREFIX}/cameronhetzler/wordpressdb:/var/lib/mysql
