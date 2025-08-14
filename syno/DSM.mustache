@@ -1,0 +1,150 @@
+{{#DSM}}
+
+server {
+    listen {{port}} default_server;
+    listen [::]:{{port}} default_server;
+    server_name _;
+    gzip on;
+    include conf.d/alias.*.conf;
+    {{> /usr/syno/share/nginx/DSM_Main}}
+    {{> /usr/syno/share/nginx/optimization}}
+}
+
+{{#DSM.fqdn}}
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{DSM.server_name}};
+    set $fqdn {{DSM.fqdn}};
+    {{> /usr/syno/share/nginx/LetsEncrypt}}
+    {{#DSM.https.hsts}}
+    location / {
+        return 301 https://$server_name$request_uri;
+    {{/DSM.https.hsts}}
+    {{^DSM.https.hsts}}
+    gzip on;
+    include conf.d/alias.*.conf;
+    {{> /usr/syno/share/nginx/DSM_Main}}
+    include /usr/syno/share/nginx/conf.d/www.*.conf;
+    include conf.d/www.*.conf;
+    {{> /usr/syno/share/nginx/optimization}}
+    {{/DSM.https.hsts}}
+}
+
+server {
+    listen {{port}};
+    listen [::]:{{port}};
+    server_name {{DSM.server_name}};
+    location / {
+        return 404;
+    }
+    {{> /usr/syno/share/nginx/error_page}}
+}
+
+{{/DSM.fqdn}}
+{{#ssl}}
+server {
+    listen {{port}} default_server ssl;
+    listen [::]:{{port}} default_server ssl;
+    server_name _;
+    include conf.d/ssl.*.conf;
+    include conf.d/alias.*.conf;
+    {{> /usr/syno/share/nginx/DSM_Main}}
+    {{> /usr/syno/share/nginx/optimization}}
+}
+
+{{#DSM.fqdn}}
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {{DSM.server_name}};
+    set $fqdn {{DSM.fqdn}};
+    {{> /usr/syno/share/nginx/LetsEncrypt}}
+    {{#DSM.https}}
+    {{> /usr/syno/share/nginx/https.mustache}}
+    {{/DSM.https}}
+    include conf.d/ssl.*.conf;
+    include conf.d/alias.*.conf;
+    {{> /usr/syno/share/nginx/DSM_Main}}
+    include /usr/syno/share/nginx/conf.d/www.*.conf;
+    include conf.d/www.*.conf;
+    {{> /usr/syno/share/nginx/optimization}}
+}
+
+server {
+    listen {{port}} ssl;
+    listen [::]:{{port}} ssl;
+    server_name {{DSM.server_name}};
+    location / {
+        return 404;
+    }
+    {{> /usr/syno/share/nginx/error_page}}
+}
+
+{{/DSM.fqdn}}
+{{#DSM.synorelay}}
+
+server {
+    listen {{http_port}};
+    listen [::]:{{http_port}};
+    server_name {{ddns}};
+    set $fqdn $server_name;
+    gzip on;
+
+
+
+    include conf.d/alias.*.conf;
+
+    {{> /usr/syno/share/nginx/DSM_Main}}
+
+    {{> /usr/syno/share/nginx/optimization}}
+
+}
+
+
+
+server {
+
+    listen {{https_port}} ssl;
+
+    listen [::]:{{https_port}} ssl;
+
+
+
+    server_name {{ddns}};
+
+    set $fqdn $server_name;
+
+
+
+    {{> /usr/syno/share/nginx/LetsEncrypt}}
+
+
+
+    {{#https}}
+
+    {{> /usr/syno/share/nginx/https.mustache}}
+
+    {{/https}}
+
+
+
+    include conf.d/ssl.*.conf;
+
+
+
+    include conf.d/alias.*.conf;
+
+    {{> /usr/syno/share/nginx/DSM_Main}}
+
+    {{> /usr/syno/share/nginx/optimization}}
+
+}
+
+{{/DSM.synorelay}}
+
+
+
+{{/ssl}}
+
+{{/DSM}}
