@@ -26,7 +26,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.pihole.rule=Host(`pihole.lan`)
-      - traefik.http.routers.pihole.entrypoints=websecure
+      - traefik.http.routers.pihole.entrypoints=web
       - traefik.http.services.pihole.loadbalancer.server.port=8081
       - traefik.http.routers.pihole.service=pihole
       - traefik.http.routers.pihole.tls.certresolver=myresolver
