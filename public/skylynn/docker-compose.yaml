@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  wordpress:
+    image: wordpress:php8.2
+    container_name: wordpress-skylynn
+    restart: always
+    ports:
+      - 8183:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ${SKY_WP_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${SKY_WP_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${SKY_WP_DB_NAME}
+    volumes:
+      - /volume1/docker/skylynn/wordpress:/var/www/html
+
+  db:
+    image: mysql
+    container_name: wordpress-db-skylynn
+    restart: always
+    environment:
+      MYSQL_USER: ${SKY_WP_DB_USER}
+      MYSQL_PASSWORD: ${SKY_WP_DB_PASSWORD}
+      MYSQL_DATABASE: ${SKY_WP_DB_NAME}
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/skylynn/wordpressdb:/var/lib/mysql
