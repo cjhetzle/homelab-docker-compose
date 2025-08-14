@@ -9,8 +9,10 @@ services:
       - no-new-privileges:false
     restart: on-failure:5
     ports:
+      - 123:123/udp
       - 53:53/tcp
       - 53:53/udp
+      - 67:67/udp
       - 853:853
       - 8081:80
       - 8443:443
