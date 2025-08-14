@@ -17,7 +17,9 @@ services:
       - 8081:80
       - 8443:443
     networks:
-      - traefik
+      traefik: {}
+      backend:
+        ipv4_address: '172.31.0.100'
     cap_add:
       - NET_ADMIN
       - CAP_SYS_TIME
@@ -32,6 +34,13 @@ services:
       TZ: ${TZ}
       DNSMASQ_USER: ${PH_DNSMASQ_USER}
       DNSMASQ_LISTENING: ${PH_DNSMASQ_LISTENING}
+      DHCP_ACTIVE: 'true'
+      DHCP_START: 192.168.1.2
+      DHCP_END: 192.168.1.254
+      DHCP_ROUTER: 192.168.1.1
+      DHCP_LEASETIME: 24
+    depends_on:
+      - dhcphelper
     labels:
       - traefik.enable=true
       - traefik.http.routers.pihole.rule=Host(`pihole.lan`)
@@ -39,6 +48,19 @@ services:
       - traefik.http.services.pihole.loadbalancer.server.port=80
       - traefik.http.routers.pihole.service=pihole
 
+  dhcphelper:
+    image: noamokman/dhcp-helper
+    container_name: dhcp-helper
+    restart: unless-stopped
+    network_mode: "host"
+    command: -s 172.31.0.100
+    cap_add:
+      - NET_ADMIN
+
 networks:
+  backend:
+    ipam:
+      config:
+        - subnet: 172.31.0.0/16
   traefik:
     external: true
