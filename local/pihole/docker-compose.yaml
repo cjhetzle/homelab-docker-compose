@@ -19,7 +19,7 @@ services:
     networks:
       traefik: {}
       backend:
-        ipv4_address: '172.31.0.100'
+        ipv4_address: '172.32.0.100'
     cap_add:
       - NET_ADMIN
       - CAP_SYS_TIME
@@ -53,7 +53,7 @@ services:
     container_name: dhcp-helper
     restart: unless-stopped
     network_mode: "host"
-    command: -s 172.31.0.100
+    command: -s 172.32.0.100
     cap_add:
       - NET_ADMIN
 
@@ -61,6 +61,6 @@ networks:
   backend:
     ipam:
       config:
-        - subnet: 172.31.0.0/16
+        - subnet: 172.32.0.0/16
   traefik:
     external: true
