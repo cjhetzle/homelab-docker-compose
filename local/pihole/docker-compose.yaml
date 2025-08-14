@@ -2,24 +2,13 @@ version: "3.9"
 services:
   pihole:
     image: pihole/pihole:latest
-    container_name: pihole
+    container_name: pi-hole
     mem_limit: 2g
     cpu_shares: 768
     security_opt:
       - no-new-privileges:false
     restart: on-failure:5
-    ports:
-      #- 123:123/udp
-      #- 53:53/tcp
-      #- 53:53/udp
-      #- 853:853
-      #- 8081:80
-      #- 8443:443
     network_mode: host
-    #networks:
-    #  traefik: {}
-    #  backend:
-    #    ipv4_address: '172.32.0.100'
     cap_add:
       - NET_ADMIN
       - CAP_SYS_TIME
@@ -34,33 +23,3 @@ services:
       TZ: ${TZ}
       DNSMASQ_USER: ${PH_DNSMASQ_USER}
       DNSMASQ_LISTENING: ${PH_DNSMASQ_LISTENING}
-      DHCP_ACTIVE: 'true'
-      DHCP_START: 192.168.1.2
-      DHCP_END: 192.168.1.254
-      DHCP_ROUTER: 192.168.1.1
-      DHCP_LEASETIME: 24
-    #depends_on:
-    #  - dhcphelper
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.pihole.rule=Host(`pihole.lan`)
-      - traefik.http.routers.pihole.entrypoints=web
-      - traefik.http.services.pihole.loadbalancer.server.port=80
-      - traefik.http.routers.pihole.service=pihole
-
-  #dhcphelper:
-  #  image: noamokman/dhcp-helper
-  #  container_name: dhcp-helper
-  #  restart: unless-stopped
-  #  network_mode: "host"
-  #  command: -s 172.32.0.100
-  #  cap_add:
-  #    - NET_ADMIN
-
-#networks:
-#  backend:
-#    ipam:
-#      config:
-#        - subnet: 172.32.0.0/16
-#  traefik:
-#    external: true
