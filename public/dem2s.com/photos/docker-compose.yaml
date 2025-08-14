@@ -13,6 +13,8 @@ services:
     networks:
       - traefik
       - backend
+    ports:
+      - 4573:80
     volumes:
       - ${DOCKER_DIR_PREFIX}/chevereto/storage:/var/www/html/images/:rw
     environment:
