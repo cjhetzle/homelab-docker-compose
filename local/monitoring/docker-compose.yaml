@@ -28,7 +28,7 @@ services:
       # Get the routes from http
       - traefik.http.routers.grafana-secure.rule=Host(`grafana.lan`)
       - traefik.http.routers.grafana-secure.entrypoints=websecure
-      - traefik.http.services.grafana-secure.loadbalancer.server.port=3340
+      - traefik.http.services.grafana-secure.loadbalancer.server.port=3000
       - traefik.http.routers.grafana-secure.service=grafana
       - traefik.http.routers.grafana-secure.tls.certresolver=lets-encr
 

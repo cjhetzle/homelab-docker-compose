@@ -27,7 +27,7 @@ services:
       - traefik.http.routers.dashy.entrypoints=websecure
       - traefik.http.services.dashy.loadbalancer.server.port=8080
       - traefik.http.routers.dashy.service=dashy
-      - traefik.http.routers.dashy.tls.certresolver=myresolver
+      - traefik.http.routers.dashy.tls.certresolver=lets-encr
 
 networks:
   traefik:
