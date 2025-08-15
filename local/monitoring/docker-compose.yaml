@@ -26,19 +26,11 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from http
-      - traefik.http.routers.grafana.rule=Host(`grafana.lan`)
-      - traefik.http.routers.grafana.entrypoints=web
-      - traefik.http.services.grafana.loadbalancer.server.port=80
-      - traefik.http.routers.grafana.service=grafana
-      # Redirect these routes to https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.grafana.middlewares=redirect-to-https@docker
-      # Get the routes from https
-      - traefik.http.routers.grafana-secured.rule=Host(`grafana.lan`)
-      - traefik.http.routers.grafana-secured.entrypoints=websecure
-      # Apply autentificiation with http challenge
-      - traefik.http.routers.grafana-secured.tls=true
-      - traefik.http.routers.grafana-secured.tls.certresolver=lets-encr
+      - traefik.http.routers.grafana-secure.rule=Host(`grafana.lan`)
+      - traefik.http.routers.grafana-secure.entrypoints=websecure
+      - traefik.http.services.grafana-secure.loadbalancer.server.port=3340
+      - traefik.http.routers.grafana-secure.service=grafana
+      - traefik.http.routers.grafana-secure.tls.certresolver=lets-encr
 
   prometheus:
     image: prom/prometheus
