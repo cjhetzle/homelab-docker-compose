@@ -16,7 +16,7 @@ services:
     restart: always
     image: ${IMAGE_PREFIX}/safeline-postgres${ARCH_SUFFIX}:15.2
     volumes:
-      - ${SAFELINE_DIR}/resources/postgres/data:/var/lib/postgresql/data
+      - ${DOCKER_DIR_PREFIX}/safeline/resources/postgres/data:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     environment:
       - POSTGRES_USER=safeline-ce
@@ -98,7 +98,7 @@ services:
       - LUIGI_PG=postgres://safeline-ce:${POSTGRES_PASSWORD}@safeline-pg/safeline-ce?sslmode=disable
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${SAFELINE_DIR}/resources/luigi:/app/data
+      - ${DOCKER_DIR_PREFIX}/safeline/resources/luigi:/app/data
     logging:
       driver: "json-file"
       options:
