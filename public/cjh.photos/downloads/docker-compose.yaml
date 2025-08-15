@@ -31,7 +31,7 @@ services:
       - traefik.http.routers.dl-cjhphotos-secure.rule=Host(`downloads.cjh.photos`)
       - traefik.http.routers.dl-cjhphotos-secure.entrypoints=websecure
       # Specify the service name and the service loadbalancer port
-      - traefik.http.routers.dl-cjhphotos-secure.service=crowdsec-service
+      - traefik.http.routers.dl-cjhphotos-secure.service=dl-cjhphotos-service
       - traefik.http.services.dl-cjhphotos-service.loadbalancer.server.port=80
       # Apply autentificiation with http challenge
       - traefik.http.routers.dl-cjhphotos-secure.tls.certresolver=lets-encr
