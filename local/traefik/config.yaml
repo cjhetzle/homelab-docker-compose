@@ -1,0 +1,77 @@
+http:
+  middlewares:
+    crowdsec:
+      plugin:
+        crowdsec-bouncer-traefik-plugin:
+          enabled: true
+          logLevel: DEBUG
+          LogFilePath: ""
+          updateIntervalSeconds: 60
+          updateMaxFailure: 0
+          defaultDecisionSeconds: 60
+          remediationStatusCode: 403
+          httpTimeoutSeconds: 10
+          crowdsecMode: stream
+          
+          crowdsecAppsecEnabled: false
+          #crowdsecAppsecHost: crowdsec:7422
+          #crowdsecAppsecPath: "/"
+          #crowdsecAppsecFailureBlock: true
+          #crowdsecAppsecUnreachableBlock: true
+          #crowdsecAppsecBodyLimit: 10485760
+          
+          crowdsecLapiKey: t4TefV0WdGvYdaPeNSYj35jkpfcmNsAbkxh3CSnDEk8
+          crowdsecLapiScheme: http
+          crowdsecLapiHost: crowdsec:8080
+          crowdsecLapiPath: "/"
+          crowdsecLapiTLSInsecureVerify: false
+          
+          #crowdsecCapiMachineId: login
+          #crowdsecCapiPassword: password
+          #crowdsecCapiScenarios:
+          #  - crowdsecurity/http-path-traversal-probing
+          #  - crowdsecurity/http-xss-probing
+          #  - crowdsecurity/http-generic-bf
+           
+          forwardedHeadersTrustedIPs:
+            - 10.0.10.23/32
+            - 10.0.20.0/24
+          clientTrustedIPs:
+            - 192.168.1.0/24
+          forwardedHeadersCustomName: X-Custom-Header
+          remediationHeadersCustomName: cs-remediation
+          
+          redisCacheEnabled: false
+          #redisCacheHost: "redis:6379"
+          #redisCachePassword: password
+          #redisCacheDatabase: "5"
+          #redisCacheUnreachableBlock: true
+          
+          crowdsecLapiTLSCertificateAuthority: |-
+            -----BEGIN CERTIFICATE-----
+            MIIEBzCCAu+gAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwgZQxCzAJBgNVBAYTAlVT
+            ...
+            Q0veeNzBQXg1f/JxfeA39IDIX1kiCf71tGlT
+            -----END CERTIFICATE-----
+          crowdsecLapiTLSCertificateBouncer: |-
+            -----BEGIN CERTIFICATE-----
+            MIIEHjCCAwagAwIBAgIUOBTs1eqkaAUcPplztUr2xRapvNAwDQYJKoZIhvcNAQEL
+            ...
+            RaXAnYYUVRblS1jmePemh388hFxbmrpG2pITx8B5FMULqHoj11o2Rl0gSV6tHIHz
+            N2U=
+            -----END CERTIFICATE-----
+          crowdsecLapiTLSCertificateBouncerKey: |-
+            -----BEGIN RSA PRIVATE KEY-----
+            MIIEogIBAAKCAQEAtYQnbJqifH+ZymePylDxGGLIuxzcAUU4/ajNj+qRAdI/Ux3d
+            ...
+            ic5cDRo6/VD3CS3MYzyBcibaGaV34nr0G/pI+KEqkYChzk/PZRA=
+            -----END RSA PRIVATE KEY-----
+            
+          #captchaProvider: hcaptcha
+          #captchaSiteKey: FIXME
+          #captchaSecretKey: FIXME
+          #captchaGracePeriodSeconds: 1800
+          #captchaHTMLFilePath: /captcha.html
+          banHTMLFilePath: /etc/traefik/ban.html
+          
+          metricsUpdateIntervalSeconds: 600

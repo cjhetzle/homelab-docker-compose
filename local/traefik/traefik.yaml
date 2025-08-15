@@ -61,6 +61,6 @@ providers: # Providers
   docker: # Docker provider for dynamic configuration inside docker compose files
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
-  file: # File provider for static
-    filename: /etc/traefik/traefik.yaml
+  file:
+    filename: /etc/traefik/config.yaml
     watch: true
