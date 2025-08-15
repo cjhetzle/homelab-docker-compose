@@ -1,30 +1,7 @@
 version: "3.9"
 services:
-  db:
-    image: mariadb:11.3-jammy
-    container_name: chevereto-db
-    hostname: chevereto-db
-    mem_limit: 1g
-    cpu_shares: 768
-    networks:
-      - backend
-    security_opt:
-      - no-new-privileges:true
-    user: 1026:100
-    volumes:
-      - ${DOCKER_DIR_PREFIX}/chevereto/db:/var/lib/mysql:rw
-      - ${DOCKER_DIR_PREFIX}/chevereto/db:/etc/mysql/conf.d:rw
-    environment:
-      TZ: America/New_York
-      MARIADB_RANDOM_ROOT_PASSWORD: true
-      MARIADB_DATABASE: chevereto
-      MARIADB_USER: cheveretouser
-      MARIADB_PASSWORD: cheveretopass
-      MARIADB_MYSQL_LOCALHOST_GRANTS: SUPER
-    restart: on-failure:5
-
   chevereto:
-    image: ghcr.io/chevereto/chevereto:4.3.6
+    image: chevereto/chevereto:latest
     container_name: chevereto
     hostname: chevereto
     mem_limit: 4g
@@ -32,15 +9,16 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      test: curl -f http://photos.dem2s.com:80/ || exit 1
+      test: curl -f http://localhost:80/ || exit 1
+    ports:
+      - 4573:80
     networks:
+      - traefik
       - backend
     volumes:
       - ${DOCKER_DIR_PREFIX}/chevereto/storage:/var/www/html/images/:rw
-
     environment:
-
-      TZ: America/New_York
+      TZ: ${TZ}
       CHEVERETO_DB_HOST: chevereto-db
       CHEVERETO_DB_USER: ${CHEVERETO_DB_USER}
       CHEVERETO_DB_PASS: ${CHEVERETO_DB_PASS}
@@ -63,39 +41,75 @@ services:
       db:
         condition: service_started
     labels:
-      - "traefik.enable=true" # This enables Traefik
-      - "traefik.http.routers.chevereto.rule=Host(`photos.dem2s.com`)"
-      - "traefik.http.routers.chevereto.entrypoints=web" # Determine what entrypoint to use, and this what port
-      - "traefik.http.routers.chevereto.service=chevereto-svc" # Determine what service to use
-      - "traefik.http.services.chevereto-svc.loadbalancer.server.port=80" # Determine which port from the service to expose through Traefik
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from http
+      - traefik.http.routers.photos-dem2s.rule=Host(`photos.dem2s.com`)
+      - traefik.http.routers.photos-dem2s.entrypoints=web
+      - traefik.http.services.photos-dem2s.loadbalancer.server.port=80
+      - traefik.http.routers.photos-dem2s.service=photos-dem2s
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.photos-dem2s.middlewares=redirect-to-https@docker
+      # Get the routes from https
+      - traefik.http.routers.photos-dem2s-secured.rule=Host(`photos.dem2s.com`)
+      - traefik.http.routers.photos-dem2s-secured.entrypoints=websecure
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.photos-dem2s-secured.tls=true
+      - traefik.http.routers.photos-dem2s-secured.tls.certresolver=lets-encr
       
-  reverse-proxy:
-    image: traefik:latest
-    restart: always
+  db:
+    image: mariadb:11.3-jammy
+    container_name: chevereto-db
+    hostname: chevereto-db
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
     networks:
       - backend
-    ports:
-      - 4573:80
-    depends_on:
-      - 'chevereto'
-    command:
-      - --configFile=/etc/traefik/traefik.yaml
+    user: 1026:100
     volumes:
-      - ${DOCKER_DIR_SOCK}:/var/run/docker.sock
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/traefik.yaml:/etc/traefik/traefik.yaml:rw
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/configs:/configs:ro
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/acme.json:/acme.json:rw
-      - ${DOCKER_DIR_PREFIX}/chevereto/reverse-proxy/data/logs:/logs:rw
+      - ${DOCKER_DIR_PREFIX}/chevereto/db:/var/lib/mysql:rw
+      - ${DOCKER_DIR_PREFIX}/chevereto/db:/etc/mysql/conf.d:rw
     environment:
-      - TZ=America/New_York
-    read_only: true
-    security_opt:
-      - no-new-privileges=true
+      TZ: ${TZ}
+      MARIADB_RANDOM_ROOT_PASSWORD: true
+      MARIADB_DATABASE: ${CHEVERETO_DB_NAME}
+      MARIADB_USER: ${CHEVERETO_DB_USER}
+      MARIADB_PASSWORD: ${CHEVERETO_DB_PASS}
+      MARIADB_MYSQL_LOCALHOST_GRANTS: SUPER
+    restart: on-failure:5
+
+  whoami:
+    container_name: whoami
+    image: traefik/whoami
     labels:
-      - crowdsec.enable=true
-      - crowdsec.labels.type=traefik
-    ## https://docs.crowdsec.net/docs/next/data_sources/docker#use_container_labels
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from http
+      - traefik.http.routers.whoami.rule=Host(`whoami.dem2s.com`)
+      - traefik.http.routers.whoami.entrypoints=web
+      - traefik.http.services.whoami.loadbalancer.server.port=80
+      - traefik.http.routers.whoami.service=whoami
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.whoami.middlewares=redirect-to-https@docker
+      # Get the routes from https
+      - traefik.http.routers.whoami-secured.rule=Host(`whoami.dem2s.com`)
+      - traefik.http.routers.whoami-secured.entrypoints=websecure
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.whoami-secured.tls=true
+      - traefik.http.routers.whoami-secured.tls.certresolver=lets-encr
+    networks:
+      - traefik
 
 networks:
+  traefik:
+    external: true
   backend:
-    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.33.0.0/16

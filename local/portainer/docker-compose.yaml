@@ -1,0 +1,29 @@
+services:
+    portainer-ce:
+        image: portainer/portainer-ce
+        container_name: portainer
+        ports:
+            - 8000:8000
+            - 9000:9000
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /volume1/docker/portainer:/data
+        networks:
+            - traefik
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.portainer.rule=Host(`portainer.lan`)
+            - traefik.http.routers.portainer.entrypoints=web
+            - traefik.http.services.portainer.loadbalancer.server.port=9000
+            - traefik.http.routers.portainer.service=portainer
+            - traefik.http.routers.portainer-secured.rule=Host(`portainer.lan`)
+            - traefik.http.routers.portainer-secured.entrypoints=websecure
+            - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+            - traefik.http.routers.portainer.middlewares=redirect-to-https@docker
+            - traefik.http.routers.portainer.tls.passthrough=true
+
+networks:
+  traefik:
+    external: true
+        
