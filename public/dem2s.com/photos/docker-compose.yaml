@@ -103,6 +103,8 @@ services:
       # Apply autentificiation with http challenge
       - traefik.http.routers.whoami-secured.tls=true
       - traefik.http.routers.whoami-secured.tls.certresolver=lets-encr
+      - traefik.http.middlewares.crowdsec-bar.plugin.bouncer.crowdsecappsecenabled=true
+      - traefik.http.middlewares.crowdsec-bar.plugin.bouncer.crowdsecappsechost=crowdsec:7422
     networks:
       - traefik
 
