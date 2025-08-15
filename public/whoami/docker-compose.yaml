@@ -20,7 +20,7 @@ services:
       # Apply autentificiation with http challenge
       - traefik.http.routers.whoami-secured.tls=true
       - traefik.http.routers.whoami-secured.tls.certresolver=lets-encr
-      - traefik.http.routers.whoami-secured.middlewares=crowdsec@file
+      - traefik.http.routers.whoami-secured.middlewares=crowdsec
     networks:
       - traefik
 
