@@ -1,0 +1,1 @@
+docker exec Chevereto-DB /bin/mariadb --user=cheveretouser --password=cheveretopass --database=chevereto --execute="update chv_images set image_user_id = 13 where image_user_id is null;"

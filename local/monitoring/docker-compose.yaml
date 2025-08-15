@@ -39,6 +39,7 @@ services:
     networks:
       - grafana-net
       - prometheus-net
+      - traefik
     mem_limit: 1g
     cpu_shares: 768
     security_opt:
@@ -163,3 +164,5 @@ networks:
     ipam:
       config:
         - subnet: 192.168.51.0/24
+  traefik:
+    external: true
