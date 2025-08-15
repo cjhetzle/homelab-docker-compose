@@ -29,10 +29,10 @@ services:
       - traefik.http.routers.grafana.rule=Host(`grafana.lan`)
       - traefik.http.routers.grafana.entrypoints=web
       - traefik.http.services.grafana.loadbalancer.server.port=80
-      - traefik.http.routers.grafana.service=grafana-service
+      - traefik.http.routers.grafana.service=grafana
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.grafana-service.middlewares=redirect-to-https@docker
+      - traefik.http.routers.grafana.middlewares=redirect-to-https@docker
       # Get the routes from https
       - traefik.http.routers.grafana-secured.rule=Host(`grafana.lan`)
       - traefik.http.routers.grafana-secured.entrypoints=websecure
