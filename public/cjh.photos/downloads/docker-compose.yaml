@@ -18,6 +18,7 @@ services:
     ports:
       - 8516:80
     networks:
+      - backend
       - traefik
     depends_on:
       db:
@@ -53,10 +54,13 @@ services:
       MYSQL_USER: ${PS_MYSQL_DB_USER}
       MYSQL_PASSWORD: ${PS_MYSQL_DB_PASSWORD}
       TZ: ${TZ}
+    networks:
+      - backend
     volumes:
       - ${DOCKER_DIR_PREFIX}/projectsend/db:/var/lib/mysql:rw
     restart: on-failure:5
 
 networks:
+  backend:
   traefik:
     external: true
