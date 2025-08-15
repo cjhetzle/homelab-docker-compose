@@ -18,6 +18,7 @@ services:
       - ${DOCKER_DIR_PREFIX}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
       - ${DOCKER_DIR_PREFIX}/crowdsec/log/crowdsec:/var/log/crowdsec:ro
       - ${DOCKER_DIR_PREFIX}/crowdsec/log/auth.log:/var/log/auth.log:ro
+      - ${DOCKER_DIR_PREFIX}/traefik/logs/:/var/log/traefik:ro
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
       - /var/run/docker.sock:/var/run/docker.sock
