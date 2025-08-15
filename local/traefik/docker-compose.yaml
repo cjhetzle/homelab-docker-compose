@@ -30,7 +30,7 @@ services:
       - traefik.http.routers.api.service=api@internal
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.api.middlewares=redirect-to-https@docker-
+      - traefik.http.routers.api.middlewares=redirect-to-https@docker
     restart: unless-stopped
 
 networks:
