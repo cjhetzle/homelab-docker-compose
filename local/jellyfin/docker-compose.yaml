@@ -30,11 +30,12 @@ services:
       # Get the routes from https
       - traefik.http.routers.jellyfin-secure.rule=Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin-secure.entrypoints=websecure
-      - traefik.http.services.jellyfin-service.loadbalancer.server.port=8096
+      # Specify the service name and the service loadbalancer port
       - traefik.http.routers.jellyfin-secure.service=jellyfin-service
+      - traefik.http.services.jellyfin-service.loadbalancer.server.port=8096
       # Apply autentificiation with http challenge
       - traefik.http.routers.jellyfin-secure.tls.certresolver=lets-encr
-      # Get the routes from https
+      # Get the routes from http
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin.entrypoints=web
       # Redirect these routes to https
