@@ -6,6 +6,7 @@ services:
     networks:
       - crowdsec-net
       - prometheus-net
+      - traefik
     environment:
       DOCKER_HOST: tcp://socket-proxy:2375
       COLLECTIONS: crowdsecurity/traefik
@@ -17,6 +18,24 @@ services:
       - ${DOCKER_DIR_PREFIX}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.crowdsec-secure.rule=Host(`crowdsec.lan`)
+      - traefik.http.routers.crowdsec-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.crowdsec-secure.service=crowdsec-service
+      - traefik.http.services.crowdsec-service.loadbalancer.server.port=8080
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.crowdsec-secure.tls.certresolver=lets-encr
+      # Get the routes from http
+      - traefik.http.routers.crowdsec.rule=Host(`crowdsec.lan`)
+      - traefik.http.routers.crowdsec.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.crowdsec.middlewares=redirect-to-https@docker
 
   socket-proxy:
     networks:
@@ -67,4 +86,6 @@ networks:
   crowdsec-net:
     driver: bridge
   prometheus-net:
+    external: true
+  traefik:
     external: true
