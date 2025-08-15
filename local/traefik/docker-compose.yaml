@@ -5,8 +5,9 @@ services:
     command:
       - --configFile=/etc/traefik/traefik.yaml
     volumes:
-      - /volume1/docker/traefik:/etc/traefik
+      - ${DOCKER_DIR_PREFIX}/traefik:/etc/traefik
       - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_DIR_PREFIX}/traefik/config.yaml:/etc/traefik/config.yaml:ro  
     networks:
       - traefik
     ports:
