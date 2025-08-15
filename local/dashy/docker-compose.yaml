@@ -22,12 +22,22 @@ services:
     ports:
       - 7444:8080
     labels:
+      # The labels are usefull for Traefik only
       - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.dashy-secure.rule=Host(`home.lan`)
+      - traefik.http.routers.dashy-secure.entrypoints=websecure
+      - traefik.http.services.dashy-service.loadbalancer.server.port=8080
+      - traefik.http.routers.dashy-secure.service=dashy-service
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.dashy-secure.tls.certresolver=lets-encr
+      # Get the routes from https
       - traefik.http.routers.dashy.rule=Host(`home.lan`)
-      - traefik.http.routers.dashy.entrypoints=websecure
-      - traefik.http.services.dashy.loadbalancer.server.port=8080
-      - traefik.http.routers.dashy.service=dashy
-      - traefik.http.routers.dashy.tls.certresolver=lets-encr
+      - traefik.http.routers.dashy.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.dashy.middlewares=redirect-to-https@docker
 
 networks:
   traefik:

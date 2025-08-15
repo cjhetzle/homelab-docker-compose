@@ -25,14 +25,17 @@ services:
       # The labels are usefull for Traefik only
       - traefik.enable=true
       - traefik.docker.network=traefik
-      # Get the routes from http
+      # Get the routes from https
       - traefik.http.routers.grafana-secure.rule=Host(`grafana.lan`)
       - traefik.http.routers.grafana-secure.entrypoints=websecure
       - traefik.http.services.grafana.loadbalancer.server.port=3000
       - traefik.http.routers.grafana-secure.service=grafana
+      # Apply autentificiation with http challenge
       - traefik.http.routers.grafana-secure.tls.certresolver=lets-encr
+      # Get the routes from https
       - traefik.http.routers.grafana.rule=Host(`grafana.lan`)
       - traefik.http.routers.grafana.entrypoints=web
+      # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
       - traefik.http.routers.grafana.middlewares=redirect-to-https@docker
 
