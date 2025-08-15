@@ -11,9 +11,9 @@ entryPoints:
 certificatesResolvers: # Certificate resolver
   lets-encr:
     acme:
-      caServer: https://acme-v02.api.letsencrypt.org/directory
+      caServer: ${CA_URL}
       storage: /etc/traefik/acme.json
-      email: cjhetz@gmail.com
+      email: ${EMAIL}
       httpChallenge:
         entryPoint: web
         delay: 15
