@@ -18,6 +18,8 @@ services:
       test: ["CMD-SHELL", "redis-cli ping || exit 1"]
     volumes:
       - ${DOCKER_DIR_PREFIX}/invoiceninja/redis:/data:rw
+    networks:
+      - backend
     environment:
       TZ: ${TZ}
     restart: on-failure:5
@@ -34,6 +36,8 @@ services:
       - apparmor:unconfined
     volumes:
       - ${DOCKER_DIR_PREFIX}/invoiceninja/db:/var/lib/mysql:rw
+    networks:
+      - backend
     environment:
       TZ: ${TZ}
       MYSQL_ROOT_PASSWORD: ${IN_MYSQL_ROOT_PASSWORD}
@@ -88,6 +92,8 @@ services:
       MAIL_FROM_ADDRESS: ${IN_EMAIL_USERNAME}
       MAIL_FROM_NAME: Invoice
       #ERROR_EMAIL: error@mail.com # Error emails are sent to this email
+    networks:
+      - backend
     restart: on-failure:5
     depends_on:
       redis:
@@ -110,7 +116,33 @@ services:
     volumes:
       - ${DOCKER_DIR_PREFIX}/invoiceninja/in-vhost.conf:/etc/nginx/conf.d/in-vhost.conf:ro
       - ${DOCKER_DIR_PREFIX}/invoiceninja/public:/var/www/app/public:ro
+    networks:
+      - backend
+      - traefik
     restart: on-failure:5
     depends_on:
       invoiceninja:
         condition: service_started
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.in-cjhphotos-secure.rule=Host(`invoice.cjh.photos`)
+      - traefik.http.routers.in-cjhphotos-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.in-cjhphotos-secure.service=in-cjhphotos-service
+      - traefik.http.services.in-cjhphotos-service.loadbalancer.server.port=80
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.in-cjhphotos-secure.tls.certresolver=lets-encr
+      # Get the routes from http
+      - traefik.http.routers.in-cjhphotos.rule=Host(`invoice.cjh.photos`)
+      - traefik.http.routers.in-cjhphotos.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.in-cjhphotos.middlewares=redirect-to-https@docker
+    
+networks:
+  backend:
+  traefik:
+    external: true
