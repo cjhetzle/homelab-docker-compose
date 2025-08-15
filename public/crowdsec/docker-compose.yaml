@@ -16,6 +16,7 @@ services:
     depends_on:
       - 'socket-proxy'
     volumes:
+      - ${DOCKER_DIR_PREFIX}/crowdsec/appsec.yaml:/etc/crowdsec/acquis.d/appsec.yaml
       - ${DOCKER_DIR_PREFIX}/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
