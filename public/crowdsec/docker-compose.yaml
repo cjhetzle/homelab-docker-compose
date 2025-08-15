@@ -42,6 +42,7 @@ services:
   socket-proxy:
     networks:
       - crowdsec-net
+      - traefik
     restart: always
     image: lscr.io/linuxserver/socket-proxy:latest
     container_name: socket-proxy
