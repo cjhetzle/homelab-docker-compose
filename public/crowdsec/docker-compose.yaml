@@ -9,7 +9,8 @@ services:
       - traefik
     environment:
       DOCKER_HOST: tcp://socket-proxy:2375
-      COLLECTIONS: crowdsecurity/traefik
+      ## Please note the spaces between the collections names (hence why the quotes are needed)
+      - 'COLLECTIONS=crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik'
     ports:
       - 8083:8080
     depends_on:

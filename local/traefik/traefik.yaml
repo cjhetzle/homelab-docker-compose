@@ -30,6 +30,11 @@ api: # Web interface enable
 #        customRequestHeaders:
 #          Connection: "Upgrade"
 #          Upgrade: "websocket"
+experimental:
+  plugins:
+    crowdsec-bouncer-traefik-plugin:
+      moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+      version: "v1.4.4"
 
 metrics:
   prometheus:
