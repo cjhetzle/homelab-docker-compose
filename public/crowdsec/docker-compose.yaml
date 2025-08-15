@@ -43,7 +43,7 @@ services:
     image: fbonalair/traefik-crowdsec-bouncer
     container_name: bouncer-traefik
     environment:
-      CROWDSEC_BOUNCER_API_KEY: ${CS_BOUNCER_TRAEFIK_API_KEY}
+      CROWDSEC_BOUNCER_API_KEY: ${CS_LAPI_KEY}
       CROWDSEC_AGENT_HOST: crowdsec:8080
       GIN_MODE: release
     depends_on:
