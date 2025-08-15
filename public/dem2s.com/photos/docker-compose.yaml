@@ -58,8 +58,8 @@ services:
       # Apply autentificiation with http challenge
       - traefik.http.routers.photos-dem2s-secured.tls=true
       - traefik.http.routers.photos-dem2s-secured.tls.certresolver=lets-encr
-      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
-      - traefik.http.routers.photos-dem2s-secured.middlewares=sslheader@docker
+      #- traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
+      #- traefik.http.routers.photos-dem2s-secured.middlewares=sslheader@docker
 
   db:
     image: mariadb:11.3-jammy
