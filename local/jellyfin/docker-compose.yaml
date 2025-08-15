@@ -24,11 +24,22 @@ services:
     ports:
       - 8096:8096
     labels:
+      # The labels are usefull for Traefik only
       - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.jellyfin-secure.rule=Host(`jellyfin.lan`)
+      - traefik.http.routers.jellyfin-secure.entrypoints=websecure
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
+      - traefik.http.routers.jellyfin-secure.service=jellyfin-service
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.jellyfin-secure.tls.certresolver=lets-encr
+      # Get the routes from https
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin.entrypoints=web
-      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
-      - traefik.http.routers.jellyfin.service=jellyfin
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.jellyfin.middlewares=redirect-to-https@docker
 
 networks:
   traefik:
