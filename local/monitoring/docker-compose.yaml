@@ -30,6 +30,7 @@ services:
       - traefik.http.routers.grafana.service=grafana
       - traefik.http.routers.grafana-secure.rule=Host(`grafana.lan`)
       - traefik.http.routers.grafana-secure.entrypoints=websecure
+      - traefik.http.routers.grafana-secured.tls=false
 
   prometheus:
     image: prom/prometheus
