@@ -14,12 +14,21 @@ services:
       - 443:443
       - 8080:8080
     labels:
+      # The labels are usefull for Traefik only
       - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.api-secure.rule=Host(`traefik.lan`)
+      - traefik.http.routers.api-secure.entrypoints=websecure
+      - traefik.http.routers.api-secure.service=api@internal
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.api-secure.tls.certresolver=lets-encr
+      # Get the routes from https
       - traefik.http.routers.api.rule=Host(`traefik.lan`)
-      - traefik.http.routers.api.service=api@internal
-      - traefik.http.routers.api.entrypoints=websecure
-      - traefik.http.routers.api.tls=true
-      - traefik.http.routers.api.tls.certresolver=myresolver
+      - traefik.http.routers.api.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.api.middlewares=redirect-to-https@docker
     restart: unless-stopped
 
 networks:
