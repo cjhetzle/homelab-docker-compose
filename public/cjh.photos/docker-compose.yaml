@@ -24,10 +24,10 @@ services:
       - traefik.http.routers.wp-cjhphotos.rule=Host(`cjh.photos`)
       - traefik.http.routers.wp-cjhphotos.entrypoints=web
       - traefik.http.services.wp-cjhphotos.loadbalancer.server.port=80
-      - traefik.http.routers.pihole.service=wordpress-cameronhetzler
+      - traefik.http.routers.wp-cjhphotos.service=wordpress-cameronhetzler
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.wp-cjhphotos.middlewares=redirect-to-https@docker
+      - traefik.http.routers.wordpress-cameronhetzler.middlewares=redirect-to-https@docker
       # Get the routes from https
       - traefik.http.routers.wp-cjhphotos-secured.rule=Host(`cjh.photos`)
       - traefik.http.routers.wp-cjhphotos-secured.entrypoints=websecure

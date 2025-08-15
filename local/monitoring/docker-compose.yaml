@@ -22,19 +22,23 @@ services:
       GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,natel-discrete-panel,grafana-piechart-panel
     restart: on-failure:5
     labels:
+      # The labels are usefull for Traefik only
       - traefik.enable=true
       - traefik.docker.network=traefik
-      - traefik.http.routers.grafana.rule=Host(`grafana.lan`)
+      # Get the routes from http
+      - traefik.http.routers.grafana.rule=Host(`cjh.photos`)
       - traefik.http.routers.grafana.entrypoints=web
-      - traefik.http.services.grafana.loadbalancer.server.port=3000
-      - traefik.http.routers.grafana.service=grafana
+      - traefik.http.services.grafana.loadbalancer.server.port=80
+      - traefik.http.routers.grafana.service=grafana-service
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.grafana.middlewares=redirect-to-https@docker
-      
-      - traefik.http.routers.grafana-secure.rule=Host(`grafana.lan`)
-      - traefik.http.routers.grafana-secure.entrypoints=websecure
-      - traefik.http.routers.grafana-secured.tls=false
+      - traefik.http.routers.grafana-service.middlewares=redirect-to-https@docker
+      # Get the routes from https
+      - traefik.http.routers.grafana-secured.rule=Host(`cjh.photos`)
+      - traefik.http.routers.grafana-secured.entrypoints=websecure
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.grafana-secured.tls=true
+      - traefik.http.routers.grafana-secured.tls.certresolver=lets-encr
 
   prometheus:
     image: prom/prometheus
