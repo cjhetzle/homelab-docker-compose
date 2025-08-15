@@ -17,10 +17,30 @@ services:
       - ${DOCKER_DIR_PREFIX}/projectsend/data:/data:rw
     ports:
       - 8516:80
+    networks:
+      - traefik
     depends_on:
       db:
         condition: service_started
     restart: on-failure:5
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.dl-cjhphotos-secure.rule=Host(`downloads.cjh.photos`)
+      - traefik.http.routers.dl-cjhphotos-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.dl-cjhphotos-secure.service=crowdsec-service
+      - traefik.http.services.dl-cjhphotos-service.loadbalancer.server.port=80
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.dl-cjhphotos-secure.tls.certresolver=lets-encr
+      # Get the routes from http
+      - traefik.http.routers.dl-cjhphotos.rule=Host(`downloads.cjh.photos`)
+      - traefik.http.routers.dl-cjhphotos.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.dl-cjhphotos.middlewares=redirect-to-https@docker
     
   db:
     container_name: projectsend-db
@@ -36,3 +56,7 @@ services:
     volumes:
       - ${DOCKER_DIR_PREFIX}/projectsend/db:/var/lib/mysql:rw
     restart: on-failure:5
+
+networks:
+  traefik:
+    external: true
