@@ -20,9 +20,7 @@ services:
       # Apply autentificiation with http challenge
       - traefik.http.routers.whoami-secured.tls=true
       - traefik.http.routers.whoami-secured.tls.certresolver=lets-encr
-      - traefik.http.middlewares.crowdsec.plugin.bouncer.crowdseclapikey=${CS_LAPI_KEY}
-      - traefik.http.middlewares.crowdsec.plugin.bouncer.crowdseclapischeme=http
-      - traefik.http.middlewares.crowdsec.plugin.bouncer.crowdseclapihost=crowdsec:8080
+      - traefik.http.routers.whoami-secured.middlewares=crowdsec@docker
     networks:
       - traefik
 

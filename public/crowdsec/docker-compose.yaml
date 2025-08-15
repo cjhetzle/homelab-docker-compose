@@ -40,19 +40,6 @@ services:
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
       - traefik.http.routers.crowdsec.middlewares=redirect-to-https@docker
 
-  crowdsec-traefik-bouncer:
-    image: fbonalair/traefik-crowdsec-bouncer
-    container_name: bouncer-traefik
-    environment:
-      CROWDSEC_BOUNCER_API_KEY: ${CS_LAPI_KEY}
-      CROWDSEC_AGENT_HOST: crowdsec:8080
-      GIN_MODE: release
-    depends_on:
-      - crowdsec
-    restart: unless-stopped
-    networks:
-      - traefik
-
 volumes:
   crowdsec-db:
   crowdsec-config:
