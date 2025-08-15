@@ -84,6 +84,19 @@ services:
       MARIADB_MYSQL_LOCALHOST_GRANTS: SUPER
     restart: on-failure:5
 
+    whoami:
+        container_name: whoami
+        image: traefik/whoami
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.whoami.rule=Host(`whoami.dem2s.com`)"
+            - "traefik.http.routers.whoami.entrypoints=websecure"
+            - "traefik.http.routers.whoami.tls=true"
+            - "traefik.http.routers.whoami.tls.certresolver=lets-encr"
+            - "traefik.http.services.whoami.loadbalancer.server.port=80"
+        networks:
+            - proxy
+
 networks:
   traefik:
     external: true
