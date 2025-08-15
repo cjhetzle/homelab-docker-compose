@@ -28,7 +28,9 @@ services:
       - traefik.http.routers.api.entrypoints=web
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.api.middlewares=redirect-to-https@docker
+      - traefik.http.routers.api.middlewares=redirect-to-https@docker-
+      - traefik.http.middlewares.crowdsec-bar.plugin.bouncer.crowdsecappsecenabled=true
+      - traefik.http.middlewares.crowdsec-bar.plugin.bouncer.crowdsecappsechost=crowdsec:7422
     restart: unless-stopped
 
 networks:
