@@ -19,6 +19,7 @@ services:
       - ${DOCKER_DIR_PREFIX}/crowdsec/log/auth.log:/var/log/auth.log:ro
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
+      - /var/run/docker.sock:/var/run/docker.sock
     labels:
       # The labels are usefull for Traefik only
       - traefik.enable=true
