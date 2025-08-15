@@ -10,6 +10,7 @@ services:
       - "PGID=1000"
       ## Please note the spaces between the collections names (hence why the quotes are needed)
       - 'COLLECTIONS=crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/traefik crowdsecurity/http-cve'
+      - 'BOUNCER_KEY_TRAEFIK=${CS_LAPI_KEY}'
     ports:
       - 8083:8080
     volumes:
