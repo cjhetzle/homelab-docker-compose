@@ -1,0 +1,39 @@
+server {
+    listen 81 default_server;
+    listen [::]:81 default_server;
+    server_name _;
+    gzip on;
+    {{> /usr/syno/share/nginx/WWW_Main}}
+}
+server {
+    listen 444 default_server ssl;
+    listen [::]:444 default_server ssl;
+    server_name _;
+    {{#DSM.https.compression}}
+    gzip on;
+    {{/DSM.https.compression}}
+    {{> /usr/syno/share/nginx/WWW_Main}}
+}
+{{#DSM.synorelay}}
+server {
+    listen 81;
+    listen [::]:81;
+    server_name {{ddns}};
+    set $fqdn $server_name;
+    gzip on;
+    {{> /usr/syno/share/nginx/WWW_Main}}
+}
+server {
+    listen 444 ssl;
+    listen [::]:444 ssl;
+    server_name {{ddns}};
+    set $fqdn $server_name;
+    {{#DSM.https.compression}}
+    gzip on;
+    {{/DSM.https.compression}}
+    {{#https}}
+    {{> /usr/syno/share/nginx/https.mustache}}
+    {{/https}}
+    {{> /usr/syno/share/nginx/WWW_Main}}
+}
+{{/DSM.synorelay}}
