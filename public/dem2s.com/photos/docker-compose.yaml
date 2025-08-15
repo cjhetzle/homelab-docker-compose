@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   chevereto:
-    image: ghcr.io/chevereto/chevereto:4.3.6
+    image: chevereto/chevereto:latest
     container_name: chevereto
     hostname: chevereto
     mem_limit: 4g
@@ -9,16 +9,16 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      test: curl -f http://photos.dem2s.com:80/ || exit 1
+      test: curl -f http://localhost:80/ || exit 1
+    ports:
+      - 4573:80
     networks:
       - traefik
       - backend
-    ports:
-      - 4573:80
     volumes:
       - ${DOCKER_DIR_PREFIX}/chevereto/storage:/var/www/html/images/:rw
     environment:
-      TZ: America/New_York
+      TZ: ${TZ}
       CHEVERETO_DB_HOST: chevereto-db
       CHEVERETO_DB_USER: ${CHEVERETO_DB_USER}
       CHEVERETO_DB_PASS: ${CHEVERETO_DB_PASS}
@@ -34,7 +34,7 @@ services:
       CHEVERETO_MAX_EXECUTION_TIME_SECONDS: 60
       CHEVERETO_MAX_UPLOAD_SIZE: 40960M
       CHEVERETO_MAX_POST_SIZE: 40960M
-      CHEVERETO_HEADER_CLIENT_IP: X-Real-IP
+      CHEVERETO_HEADER_CLIENT_IP: X-Forwarded-For
       CHEVERETO_LICENSE_KEY: ${CHEVERETO_LICENSE_KEY}
     restart: on-failure:5
     depends_on:
@@ -48,7 +48,7 @@ services:
       - traefik.http.routers.photos-dem2s.rule=Host(`photos.dem2s.com`)
       - traefik.http.routers.photos-dem2s.entrypoints=web
       - traefik.http.services.photos-dem2s.loadbalancer.server.port=80
-      - traefik.http.routers.photos-dem2s.service=chevereto
+      - traefik.http.routers.photos-dem2s.service=photos-dem2s
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
       - traefik.http.routers.photos-dem2s.middlewares=redirect-to-https@docker
@@ -58,6 +58,8 @@ services:
       # Apply autentificiation with http challenge
       - traefik.http.routers.photos-dem2s-secured.tls=true
       - traefik.http.routers.photos-dem2s-secured.tls.certresolver=lets-encr
+      #- "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+      #- "traefik.http.routers.photos-dem2s-secured.middlewares=sslheader@docker"
 
   db:
     image: mariadb:11.3-jammy
@@ -65,10 +67,10 @@ services:
     hostname: chevereto-db
     mem_limit: 1g
     cpu_shares: 768
-    networks:
-      - backend
     security_opt:
       - no-new-privileges:true
+    networks:
+      - backend
     user: 1026:100
     volumes:
       - ${DOCKER_DIR_PREFIX}/chevereto/db:/var/lib/mysql:rw
@@ -86,3 +88,6 @@ networks:
   traefik:
     external: true
   backend:
+    ipam:
+      config:
+        - subnet: 172.33.0.0/16
