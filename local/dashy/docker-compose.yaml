@@ -28,11 +28,12 @@ services:
       # Get the routes from https
       - traefik.http.routers.dashy-secure.rule=Host(`home.lan`)
       - traefik.http.routers.dashy-secure.entrypoints=websecure
-      - traefik.http.services.dashy-service.loadbalancer.server.port=8080
+      # Specify the service name and the service loadbalancer port
       - traefik.http.routers.dashy-secure.service=dashy-service
+      - traefik.http.services.dashy-service.loadbalancer.server.port=8080
       # Apply autentificiation with http challenge
       - traefik.http.routers.dashy-secure.tls.certresolver=lets-encr
-      # Get the routes from https
+      # Get the routes from http
       - traefik.http.routers.dashy.rule=Host(`home.lan`)
       - traefik.http.routers.dashy.entrypoints=web
       # Redirect these routes to https
