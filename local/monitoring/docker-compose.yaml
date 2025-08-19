@@ -132,7 +132,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.52.0
     command:
       - '--docker_only=true'
-      - '--disable_metrics=disk,network,tcp,udp,percpu,sched,process'
+      - '--disable_metrics=percpu'
       #- '--housekeeping_interval=5s'
     container_name: prometheus-cadvisor
     hostname: prometheus-cadvisor
