@@ -129,7 +129,7 @@ services:
     restart: on-failure:5
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.52.0
+    image: gcr.io/cadvisor/cadvisor:v0.50.0
     command:
       - '--docker_only=true'
       - '--disable_metrics=percpu'
