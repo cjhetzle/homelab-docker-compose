@@ -133,7 +133,7 @@ services:
     command:
       - '--docker_only=true'
       - '--disable_metrics=disk,network,tcp,udp,percpu,sched,process'
-      - '--housekeeping_interval=5s'
+      #- '--housekeeping_interval=5s'
     container_name: prometheus-cadvisor
     hostname: prometheus-cadvisor
     networks:
