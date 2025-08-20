@@ -131,6 +131,7 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     command:
+      - --housekeeping_interval=30s
       - --disable_root_cgroup_stats
       - '--docker_only=true'
       - '--disable_metrics=percpu,advtcp,app,cpuLoad,cpu_topology,cpuset,hugetlb,memory_numa,oom_event,perf_event,process,referenced_memory,resctrl,sched,tcp,udp'
