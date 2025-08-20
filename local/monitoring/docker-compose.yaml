@@ -131,6 +131,7 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     command:
+      - --allow_dynamic_housekeeping=true
       - --housekeeping_interval=30s
       - --disable_root_cgroup_stats
       - '--docker_only=true'
