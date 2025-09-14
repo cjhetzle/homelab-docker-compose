@@ -8,7 +8,8 @@ services:
     network_mode: host
     restart: always
     image: homeassistant/home-assistant
-                # The labels are usefull for Traefik only
+    labels:
+            # The labels are usefull for Traefik only
             - traefik.enable=true
             - traefik.docker.network=traefik
             # Get the routes from https
