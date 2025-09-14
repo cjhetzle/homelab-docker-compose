@@ -5,7 +5,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${DOCKER_DIR_PREFIX}/homeassistant:/config
-    network_mode: host
+    ports:
+      - 8123:8123
     restart: always
     image: homeassistant/home-assistant
     networks:
