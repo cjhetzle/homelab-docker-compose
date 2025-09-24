@@ -32,8 +32,7 @@ services:
       - traefik.http.routers.skylynn-dem2s.rule=Host(`skylynn.dem2s.com`)
       - traefik.http.routers.skylynn-dem2s.entrypoints=web
       # Redirect these routes to https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.skylynn-dem2s.middlewares=redirect-to-https@docker
+      - traefik.http.routers.skylynn-dem2s.middlewares=redirect-to-https@file
 
   db:
     image: mysql

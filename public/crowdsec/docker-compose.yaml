@@ -38,8 +38,7 @@ services:
       - traefik.http.routers.crowdsec.rule=Host(`crowdsec.lan`)
       - traefik.http.routers.crowdsec.entrypoints=web
       # Redirect these routes to https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.crowdsec.middlewares=redirect-to-https@docker
+      - traefik.http.routers.crowdsec.middlewares=redirect-to-https@file
 
 volumes:
   crowdsec-db:

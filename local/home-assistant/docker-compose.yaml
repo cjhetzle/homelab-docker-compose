@@ -27,8 +27,7 @@ services:
             - traefik.http.routers.homeassistant.rule=Host(`homeassistant.lan`)
             - traefik.http.routers.homeassistant.entrypoints=web
             # Redirect these routes to https
-            #- traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-            #- traefik.http.routers.homeassistant.middlewares=redirect-to-https@docker
+            #- traefik.http.routers.homeassistant.middlewares=redirect-to-https@file
 
 networks:
   traefik:

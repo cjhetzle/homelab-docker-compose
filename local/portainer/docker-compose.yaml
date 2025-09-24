@@ -27,8 +27,7 @@ services:
             - traefik.http.routers.portainer.rule=Host(`portainer.lan`)
             - traefik.http.routers.portainer.entrypoints=web
             # Redirect these routes to https
-            - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-            - traefik.http.routers.portainer.middlewares=redirect-to-https@docker
+            - traefik.http.routers.portainer.middlewares=redirect-to-https@file
 
 networks:
   traefik:

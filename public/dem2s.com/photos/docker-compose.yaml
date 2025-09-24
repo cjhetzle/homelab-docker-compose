@@ -51,8 +51,7 @@ services:
       - traefik.http.services.photos-dem2s.loadbalancer.server.port=80
       - traefik.http.routers.photos-dem2s.service=photos-dem2s
       # Redirect these routes to https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.photos-dem2s.middlewares=redirect-to-https@docker
+      - traefik.http.routers.photos-dem2s.middlewares=redirect-to-https@file
       # Get the routes from https
       - traefik.http.routers.photos-dem2s-secured.rule=Host(`photos.dem2s.com`)
       - traefik.http.routers.photos-dem2s-secured.entrypoints=websecure

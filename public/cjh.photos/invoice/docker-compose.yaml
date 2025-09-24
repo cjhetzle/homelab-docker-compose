@@ -139,8 +139,7 @@ services:
       - traefik.http.routers.in-cjhphotos.rule=Host(`invoice.cjh.photos`)
       - traefik.http.routers.in-cjhphotos.entrypoints=web
       # Redirect these routes to https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.in-cjhphotos.middlewares=redirect-to-https@docker
+      - traefik.http.routers.in-cjhphotos.middlewares=redirect-to-https@file
     
 networks:
   backend:
