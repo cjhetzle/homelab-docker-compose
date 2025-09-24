@@ -39,8 +39,7 @@ services:
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin.entrypoints=web
       # Redirect these routes to https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.jellyfin.middlewares=redirect-to-https@docker
+      - traefik.http.routers.jellyfin.middlewares=redirect-to-https@file
 
 networks:
   traefik:
