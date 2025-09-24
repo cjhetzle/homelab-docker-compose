@@ -25,6 +25,7 @@ services:
       - traefik.http.services.cyberchef-service.loadbalancer.server.port=8000
       # Apply autentificiation with http challenge
       - traefik.http.routers.cyberchef-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.cyberchef-secure.tls.domains[0].main=cc.yakho.me
       # Get the routes from http
       - traefik.http.routers.cyberchef.rule=Host(`cyberchef.lan`) || Host(`cc.yakho.me`)
       - traefik.http.routers.cyberchef.entrypoints=web
