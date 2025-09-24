@@ -31,7 +31,8 @@ services:
       - traefik.http.services.grafana.loadbalancer.server.port=3000
       - traefik.http.routers.grafana-secure.service=grafana
       # Apply autentificiation with http challenge
-      - traefik.http.routers.grafana-secure.tls.certresolver=lets-encr
+      #- traefik.http.routers.grafana-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.grafana-secure.tls.options=default
       # Get the routes from https
       - traefik.http.routers.grafana.rule=Host(`grafana.lan`)
       - traefik.http.routers.grafana.entrypoints=web
@@ -72,7 +73,8 @@ services:
       - traefik.http.services.prometheus-service.loadbalancer.server.port=9090
       - traefik.http.routers.prometheus-secure.service=prometheus-service
       # Apply autentificiation with http challenge
-      - traefik.http.routers.prometheus-secure.tls.certresolver=lets-encr
+      #- traefik.http.routers.prometheus-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.prometheus-secure.tls.options=default
       # Get the routes from https
       - traefik.http.routers.prometheus.rule=Host(`prometheus.lan`)
       - traefik.http.routers.prometheus.entrypoints=web
@@ -194,7 +196,8 @@ services:
       - traefik.http.services.speedtest-service.loadbalancer.server.port=80
       - traefik.http.routers.speedtest-secure.service=speedtest-service
       # Apply autentificiation with http challenge
-      - traefik.http.routers.speedtest-secure.tls.certresolver=lets-encr
+      #- traefik.http.routers.speedtest-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.speedtest-secure.tls.options=default
       # Get the routes from https
       - traefik.http.routers.speedtest.rule=Host(`speedtest.lan`)
       - traefik.http.routers.speedtest.entrypoints=web
