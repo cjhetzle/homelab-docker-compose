@@ -7,6 +7,8 @@ services:
       - ${DOCKER_DIR_PREFIX}/homeassistant:/config
     ports:
       - 8123:8123
+      - 51827:51827
+      - 21065:21065
     restart: always
     image: homeassistant/home-assistant
     networks:
