@@ -25,7 +25,7 @@ services:
       - traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=*
       - traefik.http.middlewares.corsheader.headers.accesscontrolmaxage=100
       - traefik.http.middlewares.corsheader.headers.addvaryheader=true
-      - traefik.http.routers.dashy-secure.middlewares=corsheader@docker
+      - traefik.http.routers.whoami-secure.middlewares=corsheader@docker
     networks:
       - traefik
 
