@@ -14,12 +14,12 @@ services:
       # Redirect these routes to https
       - traefik.http.routers.whoami.middlewares=redirect-to-https@file
       # Get the routes from https
-      - traefik.http.routers.whoami-secured.rule=Host(`whoami.dem2s.com`)
-      - traefik.http.routers.whoami-secured.entrypoints=websecure
+      - traefik.http.routers.whoami-secure.rule=Host(`whoami.dem2s.com`)
+      - traefik.http.routers.whoami-secure.entrypoints=websecure
       # Apply autentificiation with http challenge
-      - traefik.http.routers.whoami-secured.tls=true
-      - traefik.http.routers.whoami-secured.tls.certresolver=lets-encr
-      - traefik.http.routers.whoami-secured.middlewares=crowdsec@file
+      - traefik.http.routers.whoami-secure.tls=true
+      - traefik.http.routers.whoami-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.whoami-secure.middlewares=crowdsec@file
       # CORS
       - traefik.http.middlewares.corsheader.headers.accesscontrolallowmethods=*
       - traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=*
