@@ -38,7 +38,8 @@ services:
       - traefik.http.routers.dashy.entrypoints=web
       # Redirect these routes to https
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-      - traefik.http.routers.dashy.middlewares=redirect-to-https@file
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true
+      - traefik.http.routers.dashy.middlewares=redirect-to-https@docker
 
 networks:
   traefik:
