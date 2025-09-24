@@ -15,7 +15,7 @@ appConfig:
     enableGuestAccess: true
     users:
       - user: ${DASHY_USER_NAME}
-        password: VUE_APP_USER_PASSWORD_HASH
+        password: VUE_APP_USER_PASSWORD
         type: admin
         
   theme: colorful
