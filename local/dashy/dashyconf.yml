@@ -11,6 +11,13 @@ pageInfo:
 
 # Optional app settings and configuration
 appConfig:
+  auth:
+    enableGuestAccess: true
+    users:
+      - user: ${DASHY_USER_NAME}
+        password: VUE_APP_USER_PASSWORD_HASH
+        type: admin
+        
   theme: colorful
 
 # Main content - An array of sections, each containing an array of items
