@@ -45,6 +45,9 @@ services:
       - traefik.http.middlewares.cors.headers.customresponseheaders.Access-Control-Allow-Origin=*
       - traefik.http.middlewares.cors.headers.customresponseheaders.Access-Control-Allow-Methods=GET,POST,OPTIONS
       - traefik.http.middlewares.cors.headers.customresponseheaders.Access-Control-Allow-Headers=*
+      - traefik.http.middlewares.cors.headers.customrequestheaders.Access-Control-Allow-Origin=*
+      - traefik.http.middlewares.cors.headers.customrequestheaders.Access-Control-Allow-Methods=GET,POST,OPTIONS
+      - traefik.http.middlewares.cors.headers.customrequestheaders.Access-Control-Allow-Headers=*
       - traefik.http.routers.dashy-secure.middlewares=cors@docker
       - traefik.http.routers.dashy.middlewares=cors@docker
 
