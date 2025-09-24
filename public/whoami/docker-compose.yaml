@@ -20,6 +20,12 @@ services:
       - traefik.http.routers.whoami-secured.tls=true
       - traefik.http.routers.whoami-secured.tls.certresolver=lets-encr
       - traefik.http.routers.whoami-secured.middlewares=crowdsec@file
+      # CORS
+      - traefik.http.middlewares.corsheader.headers.accesscontrolallowmethods=*
+      - traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=*
+      - traefik.http.middlewares.corsheader.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.corsheader.headers.addvaryheader=true
+      - traefik.http.routers.dashy-secure.middlewares=corsheader@docker
     networks:
       - traefik
 
