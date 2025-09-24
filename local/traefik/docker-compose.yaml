@@ -29,7 +29,7 @@ services:
       - traefik.http.routers.api.entrypoints=web
       - traefik.http.routers.api.service=api@internal
       # Redirect these routes to https
-      - traefik.http.routers.api.middlewares=redirect-to-https
+      - traefik.http.routers.api.middlewares=redirect-to-https@file
     restart: unless-stopped
 
 networks:
