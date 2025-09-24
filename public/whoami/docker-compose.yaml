@@ -19,12 +19,12 @@ services:
       # Apply autentificiation with http challenge
       - traefik.http.routers.whoami-secure.tls.certresolver=lets-encr
       # CORS
-      - traefik.http.middlewares.corsheader.headers.accesscontrolallowmethods=*
-      - traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=*
-      - traefik.http.middlewares.corsheader.headers.accesscontrolmaxage=100
-      - traefik.http.middlewares.corsheader.headers.addvaryheader=true
-      - traefik.http.middlewares.corsheader.headers.customresponseheaders.Access-Control-Allow-Origin=*
-      - traefik.http.routers.whoami-secure.middlewares=corsheader@docker
+      - traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*
+      - traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=*
+      - traefik.http.middlewares.cors.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.cors.headers.addvaryheader=true
+      - traefik.http.middlewares.cors.headers.customresponseheaders.Access-Control-Allow-Origin=*
+      - traefik.http.routers.whoami-secure.middlewares=cors@docker
     networks:
       - traefik
 
