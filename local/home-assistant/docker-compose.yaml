@@ -25,6 +25,7 @@ services:
             - traefik.http.routers.homeassistant.service=homeassistant-service
             # Apply autentificiation with http challenge
             - traefik.http.routers.homeassistant-secure.tls.certresolver=lets-encr
+            - traefik.http.routers.homeassistant-secure.tls.domains[0].main=ha.yakho.me
             # Get the routes from http
             - traefik.http.routers.homeassistant.rule=Host(`homeassistant.lan`) || Host(`ha.yakho.me`)
             - traefik.http.routers.homeassistant.entrypoints=web
