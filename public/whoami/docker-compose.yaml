@@ -23,6 +23,7 @@ services:
       - traefik.http.middlewares.cors.headers.customresponseheaders.Access-Control-Allow-Methods=GET,POST,OPTIONS
       - traefik.http.middlewares.cors.headers.customresponseheaders.Access-Control-Allow-Headers=*
       - traefik.http.routers.whoami-secure.middlewares=cors@docker
+      - traefik.http.routers.whoami.middlewares=cors@docker
     networks:
       - traefik
 
