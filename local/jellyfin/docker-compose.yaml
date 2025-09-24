@@ -34,7 +34,8 @@ services:
       - traefik.http.routers.jellyfin-secure.service=jellyfin-service
       - traefik.http.services.jellyfin-service.loadbalancer.server.port=8096
       # Apply autentificiation with http challenge
-      - traefik.http.routers.jellyfin-secure.tls.certresolver=lets-encr
+      #- traefik.http.routers.jellyfin-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.jellyfin-secure.tls=false
       # Get the routes from http
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin.entrypoints=web
