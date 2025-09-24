@@ -22,7 +22,8 @@ services:
             - traefik.http.routers.portainer-secure.service=portainer-service
             - traefik.http.services.portainer-service.loadbalancer.server.port=9000
             # Apply autentificiation with http challenge
-            - traefik.http.routers.portainer-secure.tls.certresolver=lets-encr
+            #- traefik.http.routers.portainer-secure.tls.certresolver=lets-encr
+            - traefik.http.routers.portainer-secure.tls.options=default
             # Get the routes from http
             - traefik.http.routers.portainer.rule=Host(`portainer.lan`)
             - traefik.http.routers.portainer.entrypoints=web

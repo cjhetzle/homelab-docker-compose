@@ -33,7 +33,8 @@ services:
       - traefik.http.routers.crowdsec-secure.service=crowdsec-service
       - traefik.http.services.crowdsec-service.loadbalancer.server.port=8080
       # Apply autentificiation with http challenge
-      - traefik.http.routers.crowdsec-secure.tls.certresolver=lets-encr
+      #- traefik.http.routers.crowdsec-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.crowdsec-secure.tls.options=default
       # Get the routes from http
       - traefik.http.routers.crowdsec.rule=Host(`crowdsec.lan`)
       - traefik.http.routers.crowdsec.entrypoints=web
