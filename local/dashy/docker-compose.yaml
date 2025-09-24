@@ -41,8 +41,8 @@ services:
       # Redirect these routes to https
       - traefik.http.routers.dashy.middlewares=redirect-to-https@file
       # CORS
-      - traefik.http.middlewares.corsheader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT
-      - traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=https://www.cvedetails.com/
+      - traefik.http.middlewares.corsheader.headers.accesscontrolallowmethods=*
+      - traefik.http.middlewares.corsheader.headers.accesscontrolalloworiginlist=*
       - traefik.http.middlewares.corsheader.headers.accesscontrolmaxage=100
       - traefik.http.middlewares.corsheader.headers.addvaryheader=true
       - traefik.http.routers.dashy-secure.middlewares=corsheader@docker
