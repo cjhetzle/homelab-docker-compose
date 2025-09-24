@@ -27,6 +27,7 @@ services:
       - traefik.docker.network=traefik
       # Get the routes from https
       - traefik.http.routers.dashy-secure.rule=Host(`home.lan`)
+      - traefik.http.routers.dashy-secure.rule=Host(`yakho.me`)
       - traefik.http.routers.dashy-secure.entrypoints=websecure
       # Specify the service name and the service loadbalancer port
       - traefik.http.routers.dashy-secure.service=dashy-service
@@ -35,6 +36,7 @@ services:
       - traefik.http.routers.dashy-secure.tls.certresolver=lets-encr
       # Get the routes from http
       - traefik.http.routers.dashy.rule=Host(`home.lan`)
+      - traefik.http.routers.dashy.rule=Host(`yakho.me`)
       - traefik.http.routers.dashy.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.dashy.middlewares=redirect-to-https@file
