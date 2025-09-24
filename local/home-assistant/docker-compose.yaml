@@ -21,13 +21,15 @@ services:
             # Specify the service name and the service loadbalancer port
             - traefik.http.routers.homeassistant-secure.service=homeassistant-service
             - traefik.http.services.homeassistant-service.loadbalancer.server.port=8123
+            # Specify the service name and the service loadbalancer port
+            - traefik.http.routers.homeassistant.service=homeassistant-service
             # Apply autentificiation with http challenge
             - traefik.http.routers.homeassistant-secure.tls.certresolver=lets-encr
             # Get the routes from http
             - traefik.http.routers.homeassistant.rule=Host(`homeassistant.lan`)
             - traefik.http.routers.homeassistant.entrypoints=web
             # Redirect these routes to https
-            - traefik.http.routers.homeassistant.middlewares=redirect-to-https@file
+            #- traefik.http.routers.homeassistant.middlewares=redirect-to-https@file
 
 networks:
   traefik:
