@@ -5,35 +5,25 @@ services:
       - TZ=${TZ}
     volumes:
       - ${DOCKER_DIR_PREFIX}/homeassistant:/config
-    ports:
-      - 8123:8123
-      - 51827:51827
-      - 21065:21065
     restart: always
     image: homeassistant/home-assistant
-    networks:
-            - traefik
+    network_mode: host
     labels:
-            # The labels are usefull for Traefik only
-            - traefik.enable=true
-            - traefik.docker.network=traefik
-            # Get the routes from https
-            - traefik.http.routers.homeassistant-secure.rule=Host(`homeassistant.lan`) || Host(`ha.yakho.me`)
-            - traefik.http.routers.homeassistant-secure.entrypoints=websecure
-            # Specify the service name and the service loadbalancer port
-            - traefik.http.routers.homeassistant-secure.service=homeassistant-service
-            - traefik.http.services.homeassistant-service.loadbalancer.server.port=8123
-            # Specify the service name and the service loadbalancer port
-            - traefik.http.routers.homeassistant.service=homeassistant-service
-            # Apply autentificiation with http challenge
-            - traefik.http.routers.homeassistant-secure.tls.certresolver=lets-encr
-            - traefik.http.routers.homeassistant-secure.tls.domains[0].main=ha.yakho.me
-            # Get the routes from http
-            - traefik.http.routers.homeassistant.rule=Host(`homeassistant.lan`) || Host(`ha.yakho.me`)
-            - traefik.http.routers.homeassistant.entrypoints=web
-            # Redirect these routes to https
-            #- traefik.http.routers.homeassistant.middlewares=redirect-to-https@file
-
-networks:
-  traefik:
-    external: true
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      # Get the routes from https
+      - traefik.http.routers.homeassistant-secure.rule=Host(`homeassistant.lan`) || Host(`ha.yakho.me`)
+      - traefik.http.routers.homeassistant-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.homeassistant-secure.service=homeassistant-service
+      - traefik.http.services.homeassistant-service.loadbalancer.server.port=8123
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.homeassistant.service=homeassistant-service
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.homeassistant-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.homeassistant-secure.tls.domains[0].main=ha.yakho.me
+      # Get the routes from http
+      - traefik.http.routers.homeassistant.rule=Host(`homeassistant.lan`) || Host(`ha.yakho.me`)
+      - traefik.http.routers.homeassistant.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.routers.homeassistant.middlewares=redirect-to-https@file
