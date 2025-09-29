@@ -1,0 +1,33 @@
+services:
+  traefik:
+    image: traefik:v3.5.0
+    container_name: traefik
+    command:
+      - --configFile=/etc/traefik/traefik.yaml
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/traefik-host:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_DIR_PREFIX}/traefik-host/config.yaml:/etc/traefik/config.yaml:ro  
+    network_mode: host
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.api-host-secure.rule=Host(`traefik-host.local`)
+      - traefik.http.routers.api-host-secure.entrypoints=websecure
+      - traefik.http.routers.api-host-secure.service=api@internal
+      # Apply autentificiation with http challenge
+      #- traefik.http.routers.api-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.api-host-secure.tls.options=default
+      # Get the routes from https
+      - traefik.http.routers.api-host.rule=Host(`traefik-host.local`)
+      - traefik.http.routers.api-host.entrypoints=web
+      - traefik.http.routers.api-host.service=api@internal
+      # Redirect these routes to https
+      - traefik.http.routers.api-host.middlewares=redirect-to-https@file
+    restart: unless-stopped
