@@ -28,7 +28,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from https
-      - traefik.http.routers.jellyfin-secure.rule=Host(`jellyfin.local`)
+      - traefik.http.routers.jellyfin-secure.rule=Host(`jellyfin.local`) || Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin-secure.entrypoints=websecure
       # Specify the service name and the service loadbalancer port
       - traefik.http.routers.jellyfin-secure.service=jellyfin-service
@@ -37,7 +37,7 @@ services:
       #- traefik.http.routers.jellyfin-secure.tls.certresolver=lets-encr
       - traefik.http.routers.jellyfin-secure.tls.options=default
       # Get the routes from http
-      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.local`)
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.local`) || Host(`jellyfin.lan`)
       - traefik.http.routers.jellyfin.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.jellyfin.middlewares=redirect-to-https@file
