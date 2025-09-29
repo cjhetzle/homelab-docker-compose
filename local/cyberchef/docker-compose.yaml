@@ -1,33 +1,37 @@
 services:
-  traefik:
-    image: traefik:v3.5.0
-    container_name: traefik
-    command:
-      - --configFile=/etc/traefik/traefik.yaml
-    volumes:
-      - ${DOCKER_DIR_PREFIX}/traefik-host:/etc/traefik
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${DOCKER_DIR_PREFIX}/traefik-host/config.yaml:/etc/traefik/config.yaml:ro  
-    network_mode: host
+  cyber-chef:
+    container_name: cyberchef
+    healthcheck:
+     test: curl -f http://localhost:8000/ || exit 1
+    image: mpepping/cyberchef:latest
+    mem_limit: 2g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    restart: on-failure:5
     ports:
-      - 80:80
-      - 443:443
-      - 8080:8080
+      - 7318:8000
+    networks:
+      - traefik
     labels:
       # The labels are usefull for Traefik only
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from https
-      - traefik.http.routers.api-host-secure.rule=Host(`traefik-host.local`)
-      - traefik.http.routers.api-host-secure.entrypoints=websecure
-      - traefik.http.routers.api-host-secure.service=api@internal
+      - traefik.http.routers.cyberchef-secure.rule=Host(`cyberchef.local`) || Host(`cc.yakho.me`)
+      - traefik.http.routers.cyberchef-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.cyberchef-secure.service=cyberchef-service
+      - traefik.http.services.cyberchef-service.loadbalancer.server.port=8000
       # Apply autentificiation with http challenge
-      #- traefik.http.routers.api-secure.tls.certresolver=lets-encr
-      - traefik.http.routers.api-host-secure.tls.options=default
-      # Get the routes from https
-      - traefik.http.routers.api-host.rule=Host(`traefik-host.local`)
-      - traefik.http.routers.api-host.entrypoints=web
-      - traefik.http.routers.api-host.service=api@internal
+      - traefik.http.routers.cyberchef-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.cyberchef-secure.tls.domains[0].main=cc.yakho.me
+      # Get the routes from http
+      - traefik.http.routers.cyberchef.rule=Host(`cyberchef.local`) || Host(`cc.yakho.me`)
+      - traefik.http.routers.cyberchef.entrypoints=web
       # Redirect these routes to https
-      - traefik.http.routers.api-host.middlewares=redirect-to-https@file
-    restart: unless-stopped
+      - traefik.http.routers.cyberchef.middlewares=redirect-to-https@file
+
+networks:
+  traefik:
+    external: true
