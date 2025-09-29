@@ -12,7 +12,7 @@ services:
       # The labels are usefull for Traefik only
       - traefik.enable=true
       # Get the routes from https
-      - traefik.http.routers.homeassistant-secure.rule=Host(`homeassistant.local`) || Host(`ha.yakho.me`)
+      - traefik.http.routers.homeassistant-secure.rule=Host(`homeassistant.local`) || Host(`ha.yakho.me`) || Host(`homeassistant.lan`) 
       - traefik.http.routers.homeassistant-secure.entrypoints=websecure
       # Specify the service name and the service loadbalancer port
       - traefik.http.routers.homeassistant-secure.service=homeassistant-service
@@ -23,7 +23,7 @@ services:
       - traefik.http.routers.homeassistant-secure.tls.certresolver=lets-encr
       - traefik.http.routers.homeassistant-secure.tls.domains[0].main=ha.yakho.me
       # Get the routes from http
-      - traefik.http.routers.homeassistant.rule=Host(`homeassistant.local`) || Host(`ha.yakho.me`)
+      - traefik.http.routers.homeassistant.rule=Host(`homeassistant.local`) || Host(`ha.yakho.me`) || Host(`homeassistant.lan`) 
       - traefik.http.routers.homeassistant.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.homeassistant.middlewares=redirect-to-https@file

@@ -16,7 +16,7 @@ services:
             - traefik.enable=true
             - traefik.docker.network=traefik
             # Get the routes from https
-            - traefik.http.routers.portainer-secure.rule=Host(`portainer.local`)
+            - traefik.http.routers.portainer-secure.rule=Host(`portainer.local`) || Host(`portainer.lan`)
             - traefik.http.routers.portainer-secure.entrypoints=websecure
             # Specify the service name and the service loadbalancer port
             - traefik.http.routers.portainer-secure.service=portainer-service
@@ -25,7 +25,7 @@ services:
             #- traefik.http.routers.portainer-secure.tls.certresolver=lets-encr
             - traefik.http.routers.portainer-secure.tls.options=default
             # Get the routes from http
-            - traefik.http.routers.portainer.rule=Host(`portainer.local`)
+            - traefik.http.routers.portainer.rule=Host(`portainer.local`) || Host(`portainer.lan`)
             - traefik.http.routers.portainer.entrypoints=web
             # Redirect these routes to https
             - traefik.http.routers.portainer.middlewares=redirect-to-https@file

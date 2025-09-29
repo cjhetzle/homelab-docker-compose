@@ -18,7 +18,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from https
-      - traefik.http.routers.cyberchef-secure.rule=Host(`cyberchef.local`) || Host(`cc.yakho.me`)
+      - traefik.http.routers.cyberchef-secure.rule=Host(`cyberchef.local`) || Host(`cc.yakho.me`) || Host(`cyberchef.lan`)
       - traefik.http.routers.cyberchef-secure.entrypoints=websecure
       # Specify the service name and the service loadbalancer port
       - traefik.http.routers.cyberchef-secure.service=cyberchef-service
@@ -27,7 +27,7 @@ services:
       - traefik.http.routers.cyberchef-secure.tls.certresolver=lets-encr
       - traefik.http.routers.cyberchef-secure.tls.domains[0].main=cc.yakho.me
       # Get the routes from http
-      - traefik.http.routers.cyberchef.rule=Host(`cyberchef.local`) || Host(`cc.yakho.me`)
+      - traefik.http.routers.cyberchef.rule=Host(`cyberchef.local`) || Host(`cc.yakho.me`) || Host(`cyberchef.lan`)
       - traefik.http.routers.cyberchef.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.cyberchef.middlewares=redirect-to-https@file
