@@ -185,6 +185,8 @@ services:
       - ${DOCKER_DIR_PREFIX}/speedtest/data:/config
     ports:
       - 8084:80
+    networks:
+      - traefik
     restart: unless-stopped
     labels:
       # The labels are usefull for Traefik only
