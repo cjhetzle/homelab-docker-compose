@@ -60,8 +60,8 @@ services:
     ports:
       - 8091:8091
       - 3000:3000
-    #devices:
-      #- /dev/serial/by-id/insert_stick_reference_here:/dev/zwave
+    devices:
+      - /dev/bus/usb/001/011:/dev/zwave
     volumes:
       - ${DOCKER_DIR_PREFIX}/zwave:/usr/src/app/store
     labels:
