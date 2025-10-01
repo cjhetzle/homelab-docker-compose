@@ -62,4 +62,25 @@ services:
       #- /dev/serial/by-id/insert_stick_reference_here:/dev/zwave
     volumes:
       - ${DOCKER_DIR_PREFIX}/zwave:/usr/src/app/store
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.zwave-secure.rule=Host(`zwave.local`) || Host(`zwave.lan`)
+      - traefik.http.routers.zwave-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.zwave-secure.service=zwave-service
+      - traefik.http.services.zwave-service.loadbalancer.server.port=8091
+      # Apply autentificiation with http challenge
+      #- traefik.http.routers.zwave-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.zwave-secure.tls.options=default
+      # Get the routes from http
+      - traefik.http.routers.zwave.rule=Host(`zwave.local`) || Host(`zwave.lan`)
+      - traefik.http.routers.zwave.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.routers.zwave.middlewares=redirect-to-https@file
     
+networks:
+  traefik:
+    external: true
