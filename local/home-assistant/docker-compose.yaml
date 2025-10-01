@@ -55,11 +55,7 @@ services:
     image: zwavejs/zwave-js-ui:latest
     stdin_open: true
     tty: true
-    networks:
-      - traefik
-    ports:
-      - 8091:8091
-      - 3000:3000
+    network_mode: host
     devices: # https://giuliomenna.net/blog/synology-nas-usb-port-activation-for-sonoff-zigbee-dongle-and-zigbee2mqtt/#step-4-configure-an-autoload-script
       - /dev/ttyACM0:/dev/zwave
     volumes:
@@ -67,7 +63,6 @@ services:
     labels:
       # The labels are usefull for Traefik only
       - traefik.enable=true
-      - traefik.docker.network=traefik
       # Get the routes from https
       - traefik.http.routers.zwave-secure.rule=Host(`zwave.local`) || Host(`zwave.lan`)
       - traefik.http.routers.zwave-secure.entrypoints=websecure
@@ -82,7 +77,3 @@ services:
       - traefik.http.routers.zwave.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.zwave.middlewares=redirect-to-https@file
-    
-networks:
-  traefik:
-    external: true
