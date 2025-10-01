@@ -60,7 +60,7 @@ services:
     ports:
       - 8091:8091
       - 3000:3000
-    devices:
+    devices: # https://giuliomenna.net/blog/synology-nas-usb-port-activation-for-sonoff-zigbee-dongle-and-zigbee2mqtt/#step-4-configure-an-autoload-script
       - /dev/ttyACM0:/dev/zwave
     volumes:
       - ${DOCKER_DIR_PREFIX}/zwave:/usr/src/app/store
