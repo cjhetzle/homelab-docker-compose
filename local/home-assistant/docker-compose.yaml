@@ -45,6 +45,6 @@ services:
     security_opt:
       - apparmor=unconfined
     volumes:
-      - ${DOCKER_DIR_PREFIX}/matter-server/data:/data:rw
+      - ${DOCKER_DIR_PREFIX}/matter/data:/data:rw
       - /run/dbus:/run/dbus:ro
     network_mode: host
