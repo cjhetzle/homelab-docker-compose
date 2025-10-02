@@ -23,3 +23,20 @@ services:
       TZ: ${TZ}
       DNSMASQ_USER: ${PH_DNSMASQ_USER}
       DNSMASQ_LISTENING: ${PH_DNSMASQ_LISTENING}
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      # Get the routes from https
+      - traefik.http.routers.pihole-secure.rule=Host(`pihole.local`) || Host(`pihole.lan`)
+      - traefik.http.routers.pihole-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.pihole-secure.service=pihole-service
+      - traefik.http.services.pihole-service.loadbalancer.server.port=8081
+      # Apply autentificiation with http challenge
+      #- traefik.http.routers.pihole-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.pihole-secure.tls.options=default
+      # Get the routes from http
+      - traefik.http.routers.pihole.rule=Host(`pihole.local`) || Host(`pihole.lan`)
+      - traefik.http.routers.pihole.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.routers.pihole.middlewares=redirect-to-https@file

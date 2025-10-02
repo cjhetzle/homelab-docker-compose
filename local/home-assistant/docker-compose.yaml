@@ -8,11 +8,13 @@ services:
     restart: always
     image: homeassistant/home-assistant
     network_mode: host
+    devices:
+      - /dev/ttyUSB0:/dev/zigbee
     labels:
       # The labels are usefull for Traefik only
       - traefik.enable=true
       # Get the routes from https
-      - traefik.http.routers.homeassistant-secure.rule=Host(`homeassistant.lan`) || Host(`ha.yakho.me`)
+      - traefik.http.routers.homeassistant-secure.rule=Host(`homeassistant.local`) || Host(`ha.yakho.me`) || Host(`homeassistant.lan`) 
       - traefik.http.routers.homeassistant-secure.entrypoints=websecure
       # Specify the service name and the service loadbalancer port
       - traefik.http.routers.homeassistant-secure.service=homeassistant-service
@@ -23,12 +25,13 @@ services:
       - traefik.http.routers.homeassistant-secure.tls.certresolver=lets-encr
       - traefik.http.routers.homeassistant-secure.tls.domains[0].main=ha.yakho.me
       # Get the routes from http
-      - traefik.http.routers.homeassistant.rule=Host(`homeassistant.lan`) || Host(`ha.yakho.me`)
+      - traefik.http.routers.homeassistant.rule=Host(`homeassistant.local`) || Host(`ha.yakho.me`) || Host(`homeassistant.lan`) 
       - traefik.http.routers.homeassistant.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.homeassistant.middlewares=redirect-to-https@file
 
   abode2rtc:
+    container_name: abode2rtc
     image: cjhetz/abode2rtc
     network_mode: host       # important for WebRTC, HomeKit, UDP cameras
     privileged: true         # only for FFmpeg hardware transcoding
@@ -37,3 +40,42 @@ services:
       - TZ=${TZ}  # timezone in logs
     volumes:
       - ${DOCKER_DIR_PREFIX}/go2rtc:/config   # folder for go2rtc.yaml file (edit from WebUI)
+
+  matter-server:
+    container_name: matter-server
+    image: ghcr.io/home-assistant-libs/python-matter-server:stable
+    restart: unless-stopped
+    security_opt:
+      - apparmor=unconfined
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/matter/data:/data:rw
+      - /run/dbus:/run/dbus:ro
+    network_mode: host
+
+  zwave-js-ui:
+    container_name: zwave-js-ui
+    image: zwavejs/zwave-js-ui:latest
+    stdin_open: true
+    tty: true
+    network_mode: host
+    devices: # https://giuliomenna.net/blog/synology-nas-usb-port-activation-for-sonoff-zigbee-dongle-and-zigbee2mqtt/#step-4-configure-an-autoload-script
+      - /dev/ttyACM0:/dev/zwave
+    volumes:
+      - ${DOCKER_DIR_PREFIX}/zwave:/usr/src/app/store
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      # Get the routes from https
+      - traefik.http.routers.zwave-secure.rule=Host(`zwave.local`) || Host(`zwave.lan`)
+      - traefik.http.routers.zwave-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.zwave-secure.service=zwave-service
+      - traefik.http.services.zwave-service.loadbalancer.server.port=8091
+      # Apply autentificiation with http challenge
+      #- traefik.http.routers.zwave-secure.tls.certresolver=lets-encr
+      - traefik.http.routers.zwave-secure.tls.options=default
+      # Get the routes from http
+      - traefik.http.routers.zwave.rule=Host(`zwave.local`) || Host(`zwave.lan`)
+      - traefik.http.routers.zwave.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.routers.zwave.middlewares=redirect-to-https@file

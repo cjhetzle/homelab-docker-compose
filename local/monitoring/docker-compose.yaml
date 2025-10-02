@@ -26,7 +26,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from https
-      - traefik.http.routers.grafana-secure.rule=Host(`grafana.lan`)
+      - traefik.http.routers.grafana-secure.rule=Host(`grafana.local`) || Host(`grafana.lan`)
       - traefik.http.routers.grafana-secure.entrypoints=websecure
       - traefik.http.services.grafana.loadbalancer.server.port=3000
       - traefik.http.routers.grafana-secure.service=grafana
@@ -34,7 +34,7 @@ services:
       #- traefik.http.routers.grafana-secure.tls.certresolver=lets-encr
       - traefik.http.routers.grafana-secure.tls.options=default
       # Get the routes from https
-      - traefik.http.routers.grafana.rule=Host(`grafana.lan`)
+      - traefik.http.routers.grafana.rule=Host(`grafana.local`) || Host(`grafana.lan`)
       - traefik.http.routers.grafana.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.grafana.middlewares=redirect-to-https@file
@@ -68,7 +68,7 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from https
-      - traefik.http.routers.prometheus-secure.rule=Host(`prometheus.lan`)
+      - traefik.http.routers.prometheus-secure.rule=Host(`prometheus.local`) || Host(`prometheus.lan`)
       - traefik.http.routers.prometheus-secure.entrypoints=websecure
       - traefik.http.services.prometheus-service.loadbalancer.server.port=9090
       - traefik.http.routers.prometheus-secure.service=prometheus-service
@@ -76,7 +76,7 @@ services:
       #- traefik.http.routers.prometheus-secure.tls.certresolver=lets-encr
       - traefik.http.routers.prometheus-secure.tls.options=default
       # Get the routes from https
-      - traefik.http.routers.prometheus.rule=Host(`prometheus.lan`)
+      - traefik.http.routers.prometheus.rule=Host(`prometheus.local`) || Host(`prometheus.lan`)
       - traefik.http.routers.prometheus.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.prometheus.middlewares=redirect-to-https@file
@@ -162,7 +162,7 @@ services:
       - PGID=1000
       - TZ=America/New_York
       - APP_KEY=${STT_APP_KEY}
-      - APP_URL=http://yakpak.lan:6875
+      - APP_URL=http://yakpak.local:6875
       - DB_CONNECTION=sqlite
       - SPEEDTEST_SCHEDULE=*/20 * * * *
       - SPEEDTEST_SERVERS=31904,31900,29113
@@ -185,13 +185,15 @@ services:
       - ${DOCKER_DIR_PREFIX}/speedtest/data:/config
     ports:
       - 8084:80
+    networks:
+      - traefik
     restart: unless-stopped
     labels:
       # The labels are usefull for Traefik only
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from https
-      - traefik.http.routers.speedtest-secure.rule=Host(`speedtest.lan`)
+      - traefik.http.routers.speedtest-secure.rule=Host(`speedtest.local`) || Host(`speedtest.lan`)
       - traefik.http.routers.speedtest-secure.entrypoints=websecure
       - traefik.http.services.speedtest-service.loadbalancer.server.port=80
       - traefik.http.routers.speedtest-secure.service=speedtest-service
@@ -199,7 +201,7 @@ services:
       #- traefik.http.routers.speedtest-secure.tls.certresolver=lets-encr
       - traefik.http.routers.speedtest-secure.tls.options=default
       # Get the routes from https
-      - traefik.http.routers.speedtest.rule=Host(`speedtest.lan`)
+      - traefik.http.routers.speedtest.rule=Host(`speedtest.local`) || Host(`speedtest.lan`)
       - traefik.http.routers.speedtest.entrypoints=web
       # Redirect these routes to https
       - traefik.http.routers.speedtest.middlewares=redirect-to-https@file

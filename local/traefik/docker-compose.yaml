@@ -21,14 +21,14 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       # Get the routes from https
-      - traefik.http.routers.api-secure.rule=Host(`traefik.lan`)
+      - traefik.http.routers.api-secure.rule=Host(`traefik.lan`) || Host(`traefik.local`)
       - traefik.http.routers.api-secure.entrypoints=websecure
       - traefik.http.routers.api-secure.service=api@internal
       # Apply autentificiation with http challenge
       #- traefik.http.routers.api-secure.tls.certresolver=lets-encr
       - traefik.http.routers.api-secure.tls.options=default
       # Get the routes from https
-      - traefik.http.routers.api.rule=Host(`traefik.lan`)
+      - traefik.http.routers.api.rule=Host(`traefik.lan`) || Host(`traefik.local`)
       - traefik.http.routers.api.entrypoints=web
       - traefik.http.routers.api.service=api@internal
       # Redirect these routes to https
