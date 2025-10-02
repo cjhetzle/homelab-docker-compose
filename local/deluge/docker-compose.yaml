@@ -7,7 +7,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=${TZ}
       - DELUGE_LOGLEVEL=debug #optional
     volumes:
       - ${DOCKER_DIR_PREFIX}/deluge/config:/config
@@ -93,8 +93,9 @@ services:
       - 8082:8082
       - 6881:6881
       - 6881:6881/udp
+      - 58846:58846
     volumes:
-      - /volume1/docker/gluetun:/gluetun
+      - ${DOCKER_DIR_PREFIX}/gluetun:/gluetun
     environment:
       # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
       - VPN_SERVICE_PROVIDER=${DELUGE_VPN_PROVIDER}
