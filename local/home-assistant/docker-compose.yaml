@@ -38,11 +38,10 @@ services:
     restart: unless-stopped  # autorestart on fail or config change from WebUI
     environment:
       - TZ=${TZ}  # timezone in logs
+      - ABODE_USERNAME=${ABODE_USER_NAME}
+      - ABODE_PASSWORD=${ABODE_USER_PASSWORD}
     volumes:
       - ${DOCKER_DIR_PREFIX}/go2rtc:/config   # folder for go2rtc.yaml file (edit from WebUI)
-    options:
-      abode_username: ${ABODE_USER_NAME}
-      abode_password: ${ABODE_USER_PASSWORD}
 
   matter-server:
     container_name: matter-server
