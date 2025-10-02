@@ -40,6 +40,9 @@ services:
       - TZ=${TZ}  # timezone in logs
     volumes:
       - ${DOCKER_DIR_PREFIX}/go2rtc:/config   # folder for go2rtc.yaml file (edit from WebUI)
+    options:
+      abode_username: ${ABODE_USER_NAME}
+      abode_password: ${ABODE_USER_PASSWORD}
 
   matter-server:
     container_name: matter-server
