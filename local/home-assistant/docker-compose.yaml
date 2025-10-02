@@ -36,6 +36,7 @@ services:
     network_mode: host       # important for WebRTC, HomeKit, UDP cameras
     privileged: true         # only for FFmpeg hardware transcoding
     restart: unless-stopped  # autorestart on fail or config change from WebUI
+    command: --config-file /config/options.json
     environment:
       - TZ=${TZ}  # timezone in logs
       - ABODE_USERNAME=${ABODE_USER_NAME}
