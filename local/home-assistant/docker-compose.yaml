@@ -40,6 +40,7 @@ services:
       - TZ=${TZ}  # timezone in logs
       - ABODE_USERNAME=${ABODE_USER_NAME}
       - ABODE_PASSWORD=${ABODE_USER_PASSWORD}
+      - SUPERVISOR_URL=ha.yakho.me
     volumes:
       - ${DOCKER_DIR_PREFIX}/go2rtc:/data   # folder for go2rtc.yaml file (edit from WebUI)
 
