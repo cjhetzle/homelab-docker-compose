@@ -1,0 +1,38 @@
+services:
+  headscale:
+    container_name: headscale
+    image: headscale/headscale:latest
+    command: headscale serve
+    restart: unless-stopped
+    ports:
+        - 8080:8080
+        - 9090:9090
+    volumes:
+        - ./config:/etc/headscale/
+        - ./data:/var/lib/headscale/
+
+  headscale-ui:
+    container_name: headscale-ui
+    image: ghcr.io/gurucomputing/headscale-ui:latest
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+        - 9080:80
+    network_mode: host
+    labels:
+      # The labels are usefull for Traefik only
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      # Get the routes from https
+      - traefik.http.routers.headscale-secure.rule=Host(`headscale.lan`)
+      - traefik.http.routers.headscale-secure.entrypoints=websecure
+      # Specify the service name and the service loadbalancer port
+      - traefik.http.routers.headscale-secure.service=headscale-service
+      - traefik.http.services.headscale-service.loadbalancer.server.port=80
+      # Apply autentificiation with http challenge
+      - traefik.http.routers.jellyfin-secure.tls.options=default
+      # Get the routes from http
+      - traefik.http.routers.headscale.rule=Host(`headscale.lan`)
+      - traefik.http.routers.headscale.entrypoints=web
+      # Redirect these routes to https
+      - traefik.http.routers.headscale.middlewares=redirect-to-https@file
