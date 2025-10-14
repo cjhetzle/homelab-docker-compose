@@ -29,7 +29,7 @@ services:
       - traefik.http.routers.headscale-secure.service=headscale-service
       - traefik.http.services.headscale-service.loadbalancer.server.port=80
       # Apply autentificiation with http challenge
-      - traefik.http.routers.jellyfin-secure.tls.options=default
+      - traefik.http.routers.headscale-secure.tls.options=default
       # Get the routes from http
       - traefik.http.routers.headscale.rule=Host(`headscale.lan`)
       - traefik.http.routers.headscale.entrypoints=web
