@@ -8,8 +8,8 @@ services:
         - 8085:8080
         - 9095:9090
     volumes:
-        - ./config:/etc/headscale/
-        - ./data:/var/lib/headscale/
+        - ${DOCKER_DIR_PREFIX}/headscale/config:/etc/headscale/
+        - ${DOCKER_DIR_PREFIX}/headscale/data:/var/lib/headscale/
 
   headscale-ui:
     container_name: headscale-ui
