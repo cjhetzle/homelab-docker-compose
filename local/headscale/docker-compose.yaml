@@ -5,8 +5,8 @@ services:
     command: headscale serve
     restart: unless-stopped
     ports:
-        - 8085:8080
-        - 9095:9090
+      - 8085:8080
+      - 9095:9090
     volumes:
         - ${DOCKER_DIR_PREFIX}/headscale/config:/etc/headscale/
         - ${DOCKER_DIR_PREFIX}/headscale/data:/var/lib/headscale/
@@ -17,21 +17,4 @@ services:
     pull_policy: always
     restart: unless-stopped
     ports:
-        - 9085:80
-    network_mode: host
-    labels:
-      # The labels are usefull for Traefik only
-      - traefik.enable=true
-      # Get the routes from https
-      - traefik.http.routers.headscale-secure.rule=Host(`headscale.lan`)
-      - traefik.http.routers.headscale-secure.entrypoints=websecure
-      # Specify the service name and the service loadbalancer port
-      - traefik.http.routers.headscale-secure.service=headscale-service
-      - traefik.http.services.headscale-service.loadbalancer.server.port=80
-      # Apply autentificiation with http challenge
-      - traefik.http.routers.headscale-secure.tls.options=default
-      # Get the routes from http
-      - traefik.http.routers.headscale.rule=Host(`headscale.lan`)
-      - traefik.http.routers.headscale.entrypoints=web
-      # Redirect these routes to https
-      - traefik.http.routers.headscale.middlewares=redirect-to-https@file
+      - 9085:80
