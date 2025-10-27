@@ -45,7 +45,7 @@ services:
       - traefik.http.routers.nextcloud-secure.entrypoints=websecure
       # Specify the service name and the service loadbalancer port
       - traefik.http.routers.nextcloud-secure.service=nextcloud-service
-      - traefik.http.services.nextcloud-service.loadbalancer.server.port=11000
+      - traefik.http.services.nextcloud-service.loadbalancer.server.url=http://nextcloud-aio-apache:11000
       #- traefik.http.services.nextcloud-service.loadbalancer.server.scheme=https
       - traefik.http.routers.nextcloud-secure.middlewares=nextcloud-secure-chain
 
