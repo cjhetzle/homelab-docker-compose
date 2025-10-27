@@ -48,7 +48,7 @@ services:
       - traefik.http.routers.nextcloud-secure.service=nextcloud-service
       - traefik.http.services.nextcloud-service.loadbalancer.server.url=http://nextcloud-aio-apache:11000
       #- traefik.http.services.nextcloud-service.loadbalancer.server.scheme=https
-      - traefik.http.routers.nextcloud-secure.middlewares=nextcloud-secure-chain
+      - traefik.http.routers.nextcloud-secure.middlewares=nextcloud-chain
 
       # Apply autentificiation with http challenge
       - traefik.http.routers.nextcloud-secure.tls.certresolver=lets-encr
