@@ -46,6 +46,7 @@ services:
       # Specify the service name and the service loadbalancer port
       - traefik.http.routers.nextcloud-secure.service=nextcloud-service
       - traefik.http.services.nextcloud-service.loadbalancer.server.port=8080
+      - traefik.http.services.nextcloud-service.loadbalancer.server.scheme=https
       # Apply autentificiation with http challenge
       - traefik.http.routers.nextcloud-secure.tls.certresolver=lets-encr
       # Get the routes from http
