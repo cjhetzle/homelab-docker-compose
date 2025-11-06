@@ -35,6 +35,7 @@ services:
       CHEVERETO_MAX_UPLOAD_SIZE: 40960M
       CHEVERETO_MAX_POST_SIZE: 40960M
       #CHEVERETO_HEADER_CLIENT_IP: X-Real-IP
+      CHEVERETO_HEADER_CLIENT_IP: X-Forwarded-For
       CHEVERETO_LICENSE_KEY: ${CHEVERETO_LICENSE_KEY}
     restart: on-failure:5
     depends_on:
