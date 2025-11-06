@@ -59,7 +59,7 @@ services:
       - traefik.http.routers.photos-dem2s-secured.tls=true
       - traefik.http.routers.photos-dem2s-secured.tls.certresolver=lets-encr
       # Implement crowdsec bouncer for traefik
-      - traefik.http.routers.photos-dem2s-secured.middlewares=crowdsec@file
+      #- traefik.http.routers.photos-dem2s-secured.middlewares=crowdsec@file
       
   db:
     image: mariadb:11.3-jammy
