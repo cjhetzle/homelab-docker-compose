@@ -17,6 +17,7 @@ services:
       - backend
     volumes:
       - ${DOCKER_DIR_PREFIX}/chevereto/storage:/var/www/html/images/:rw
+      - ${DOCKER_DIR_PREFIX}/chevereto/themes:/var/www/html/content/legacy/themes/
     environment:
       TZ: ${TZ}
       CHEVERETO_DB_HOST: chevereto-db
