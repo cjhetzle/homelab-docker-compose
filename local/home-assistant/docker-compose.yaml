@@ -9,7 +9,7 @@ services:
     image: homeassistant/home-assistant
     network_mode: host
     devices:
-      - /dev/ttyACM0:/dev/zigbee
+      - /dev/ttyUSB0:/dev/zigbee
     labels:
       # The labels are usefull for Traefik only
       - traefik.enable=true
