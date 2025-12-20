@@ -1,0 +1,20 @@
+services:
+  headscale:
+    container_name: headscale
+    image: headscale/headscale:latest
+    command: headscale serve
+    restart: unless-stopped
+    ports:
+      - 8085:8080
+      - 9095:9090
+    volumes:
+        - ${DOCKER_DIR_PREFIX}/headscale/config:/etc/headscale/
+        - ${DOCKER_DIR_PREFIX}/headscale/data:/var/lib/headscale/
+
+  headscale-ui:
+    container_name: headscale-ui
+    image: ghcr.io/gurucomputing/headscale-ui:latest
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - 9085:80

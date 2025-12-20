@@ -17,6 +17,7 @@ services:
       - backend
     volumes:
       - ${DOCKER_DIR_PREFIX}/chevereto/storage:/var/www/html/images/:rw
+      - ${DOCKER_DIR_PREFIX}/chevereto/themes:/var/www/html/content/legacy/themes/:rw
     environment:
       TZ: ${TZ}
       CHEVERETO_DB_HOST: chevereto-db
@@ -34,7 +35,8 @@ services:
       CHEVERETO_MAX_EXECUTION_TIME_SECONDS: 60
       CHEVERETO_MAX_UPLOAD_SIZE: 40960M
       CHEVERETO_MAX_POST_SIZE: 40960M
-      CHEVERETO_HEADER_CLIENT_IP: X-Real-IP
+      #CHEVERETO_HEADER_CLIENT_IP: X-Real-IP
+      CHEVERETO_HEADER_CLIENT_IP: X-Forwarded-For
       CHEVERETO_LICENSE_KEY: ${CHEVERETO_LICENSE_KEY}
     restart: on-failure:5
     depends_on:
@@ -59,7 +61,7 @@ services:
       - traefik.http.routers.photos-dem2s-secured.tls=true
       - traefik.http.routers.photos-dem2s-secured.tls.certresolver=lets-encr
       # Implement crowdsec bouncer for traefik
-      - traefik.http.routers.photos-dem2s-secured.middlewares=crowdsec@file
+      #- traefik.http.routers.photos-dem2s-secured.middlewares=crowdsec@file
       
   db:
     image: mariadb:11.3-jammy

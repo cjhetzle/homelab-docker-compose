@@ -1,7 +1,7 @@
 services:
   projectsend:
     container_name: projectsend
-    image: ghcr.io/linuxserver/projectsend
+    image: ghcr.io/linuxserver/projectsend:version-r1720
     healthcheck:
      test: curl -f http://localhost:80/ || exit 1
     environment:
