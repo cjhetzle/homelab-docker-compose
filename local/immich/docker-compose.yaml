@@ -18,8 +18,6 @@ services:
       # Do not edit the next line. If you want to change the media storage location on your system, edit the value of UPLOAD_LOCATION in the .env file
       - ${IM_UPLOAD_LOCATION}:/data:rw
       - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - stack.env
     networks:
       - traefik
       - backend
@@ -64,8 +62,6 @@ services:
       - model-cache:/cache
     networks:
       - backend
-    env_file:
-      - stack.env
     restart: always
     healthcheck:
       disable: false
