@@ -19,12 +19,12 @@ services:
       - ${IM_UPLOAD_LOCATION}:/data:rw
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - DB_PASSWORD: ${IM_DB_PASSWORD}
-      - DB_USERNAME: ${IM_DB_USERNAME}
-      - DB_DATABASE_NAME: ${IM_DB_DATABASE_NAME}
-      - DB_DATA_LOCATION: ${IM_DB_DATA_LOCATION}
-      - UPLOAD_LOCATION: ${IM_UPLOAD_LOCATION}
-      - IMMICH_VERSION: ${IM_VERSION}
+      - DB_PASSWORD=${IM_DB_PASSWORD}
+      - DB_USERNAME=${IM_DB_USERNAME}
+      - DB_DATABASE_NAME=${IM_DB_DATABASE_NAME}
+      - DB_DATA_LOCATION=${IM_DB_DATA_LOCATION}
+      - UPLOAD_LOCATION=${IM_UPLOAD_LOCATION}
+      - IMMICH_VERSION=${IM_VERSION}
     networks:
       - traefik
       - backend
@@ -70,12 +70,12 @@ services:
     networks:
       - backend
     environment:
-      - DB_PASSWORD: ${IM_DB_PASSWORD}
-      - DB_USERNAME: ${IM_DB_USERNAME}
-      - DB_DATABASE_NAME: ${IM_DB_DATABASE_NAME}
-      - DB_DATA_LOCATION: ${IM_DB_DATA_LOCATION}
-      - UPLOAD_LOCATION: ${IM_UPLOAD_LOCATION}
-      - IMMICH_VERSION: ${IM_VERSION}
+      - DB_PASSWORD=${IM_DB_PASSWORD}
+      - DB_USERNAME=${IM_DB_USERNAME}
+      - DB_DATABASE_NAME=${IM_DB_DATABASE_NAME}
+      - DB_DATA_LOCATION=${IM_DB_DATA_LOCATION}
+      - UPLOAD_LOCATION=${IM_UPLOAD_LOCATION}
+      - IMMICH_VERSION=${IM_VERSION}
     restart: always
     healthcheck:
       disable: false
