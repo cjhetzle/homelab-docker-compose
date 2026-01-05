@@ -129,7 +129,7 @@ services:
     restart: on-failure:5
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    image: gcr.io/cadvisor/cadvisor:v0.49.2
     command:
       - --allow_dynamic_housekeeping=true
       - --housekeeping_interval=30s
