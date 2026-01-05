@@ -142,7 +142,7 @@ services:
     networks:
       - prometheus-net
     ports:
-      - 8082:8080
+      - 8083:8080
     mem_limit: 256m
     mem_reservation: 64m
     cpu_shares: 512
